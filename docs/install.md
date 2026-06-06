@@ -6,6 +6,12 @@ Verified AI Coding is markdown-first. There is nothing to build and no dependenc
 
 Claude Code activates skills from `.claude/skills/` in your project (or `~/.claude/skills/` for global). The repo keeps the skills at `skills/` for clean open-sourcing — the install step is what makes them **active**.
 
+Skills are **auto-discovered** — there's nothing to register or enable. Each `<name>/SKILL.md` is loaded by its folder name and resolves as the slash command `/<name>` (here: `/verified-implementation` and `/ship-review`). The only related toggle is the global off-switch (`--disable-slash-commands`). A **running** session loads skills at startup, so after installing you must **restart Claude Code** for the new skills to appear.
+
+### Heads-up: the skills reference sibling files
+
+Each `SKILL.md` points at supporting files by relative path — `templates/*.md`, `prompts/*.md`, and `agents/reviewer-agent.md` (e.g. "Use `templates/feature-contract.md`"). Those paths are **relative to the repo root**, not to the skill folder. Copying only the two skill folders installs the *workflow* (the steps are written out in full inside each `SKILL.md`), but the fill-in templates and pasteable prompts will not resolve unless `templates/`, `prompts/`, and `agents/` are also reachable from your working directory. See the per-option notes below.
+
 ## Option A — copy into an existing project
 
 From your project root:
@@ -37,6 +43,10 @@ mkdir -p ~/.claude/skills
 cp -R /path/to/verified-ai-coding/skills/verified-implementation ~/.claude/skills/
 cp -R /path/to/verified-ai-coding/skills/ship-review          ~/.claude/skills/
 ```
+
+Then **restart Claude Code**. Both skills are now active in every project and resolve as `/verified-implementation` and `/ship-review`.
+
+Note the sibling-file caveat above: a global skills-only install does **not** carry `templates/`, `prompts/`, or `agents/` to `~/.claude/skills/`, so those references won't open as files. The workflow still runs (it's described in full inside each `SKILL.md`). To use the fill-in templates and pasteable prompts globally, keep a clone of this repo somewhere and open the relevant `templates/`/`prompts/`/`agents/` file by its repo path when a step calls for it — or do a per-project install (Option A) with the whole repo present.
 
 ## Verify activation
 
