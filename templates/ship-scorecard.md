@@ -1,0 +1,31 @@
+# Ship / No-Ship Scorecard
+
+Read-only output of `ship-review`. It records the verdict per dimension and a single decision. It passes only when the invariant is enforced **below the UI** and **every** redteam case behaves correctly.
+
+## Feature
+
+- **Feature:**
+- **Diff / PR:**
+- **Reviewer model used:**
+- **Date:**
+
+## Dimensions
+
+| Dimension | Verdict | Evidence |
+|---|---|---|
+| **Behavior** — does what the contract says | PASS / FAIL |  |
+| **Safety** — invariants enforced below the UI | PASS / FAIL |  |
+| **Tests** — exist, pass, exercise invariants | PASS / FAIL |  |
+| **Redteam** — every bypass case behaves | PASS / FAIL |  |
+| **Observability** — violations visible in prod | PASS / FAIL |  |
+
+## Blockers
+
+> Open proof obligations, if any. None required for SHIP.
+
+## Decision
+
+**▢ SHIP   ▢ DO NOT SHIP**
+
+- **Rationale:**
+- **If DO NOT SHIP:** run bounded remediation against the blockers above, re-run gates, re-review.
