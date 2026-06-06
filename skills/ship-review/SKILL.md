@@ -21,6 +21,8 @@ Collect everything the reviewer needs:
 
 If any of these are missing — especially the invariants or the redteam results — say so. A review without invariants is a vibe check.
 
+**Reconcile the contract against the project's existing specs**, not only the diff against the contract. The same principle that governs findings — *the tool's own output is a lead, not truth* — applies to the contract itself: a review can trace the code perfectly and still miss that the contract diverged from prior spec language. If the contract and an existing spec disagree, surface it as a finding; don't silently assume the contract wins.
+
 ## Step 2 — Build the cold-review bundle
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.
@@ -51,6 +53,8 @@ For each blocker, write a proof obligation:
 - **Minimal allowed fix** — the smallest change that satisfies the proof.
 - **Allowed files** — what may be touched.
 - **Forbidden changes** — what must not be touched (schema, adapters, UI redesign, unrelated refactors).
+
+Before a blocker becomes a proof obligation, it must clear **Claim verification before remediation** (see `verified-implementation`): exact code evidence (file + actual lines), a counter-check that could disprove it, and any untraced equivalence the fix assumes flagged explicitly. A finding that fails its counter-check is retracted — and the remediation scope shrinks with it, before implementation. *The tool's own output is a lead, not truth* — that applies to this review's findings too.
 
 ## Step 6 — Bounded remediation (only if FAIL / NEEDS_REVIEW)
 

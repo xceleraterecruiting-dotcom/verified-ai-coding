@@ -52,6 +52,27 @@ List the files the implementation is **allowed** to touch and the files that are
 - **Observability**: what must be logged/metered so a violation is visible in production (e.g., log every refused publish attempt with reason).
 - **Ship gates**: the deterministic conditions that must be green to ship — tests pass, type checks pass, every redteam case behaves, invariant enforced below the UI. These are the gates `ship-review` will check against.
 
+## Claim verification before remediation
+
+**The tool's own output is a lead, not truth.** Every finding this workflow produces — and every equivalence a proposed fix relies on — must be proven against the real code before any action is taken. AI audits are confidently wrong often enough that an unverified finding is a hypothesis, not a work item. (Real session: a headline finding claimed ~20 call sites imported the wrong function; precise tracing showed zero did.)
+
+Before recommending any change that touches **more than the single file under direct edit**, or any change that **relies on a cross-file equivalence**, each finding must carry:
+
+- **Exact code evidence** — the file and the actual lines, quoted, not a description of what you believe they say.
+- **A counter-check that could disprove the finding** — name the query or trace that would show you're wrong, and run it. If you can't name one, you haven't verified it.
+- **Untraced equivalences, flagged** — any assumption the fix leans on that you have NOT traced ("same function behavior," "same identity resolution," "same case coverage"). Mark it unproven until you've followed it in the real code.
+- **Revised scope** — if verification narrows or retracts the finding, say so.
+
+If a finding is retracted or narrowed, **the remediation plan must shrink before implementation** — never proceed on the original scope just because the plan was already written.
+
+### Anti-pattern: grep co-occurrence is not import proof
+
+`grep "from 'X'" | xargs grep "Y"` matches files where both strings merely appear; it does **not** prove `Y` is imported from `X`. Two unrelated lines in one file satisfy it. Trace the literal import statement — and what name it actually binds — before claiming a call site is affected.
+
+### Anti-pattern: a passing mock is not proof the real lookup works
+
+A test that mocks a dependency to return the expected value proves the logic **given that value** — not that the real resolution (DB lookup, identity match, enum mapping) actually produces it. When a fix changes **which mechanism** resolves a value, verify the real mechanism, not just the mocked path. A green test over a mock can hide a fix that assumed two code paths resolve identity the same way when they don't.
+
 ## Output
 
 Produce the filled artifacts (contract, invariant checklist, file lists, test/eval/redteam plans, observability + gates). State the invariants sentence explicitly. **Only then** begin implementation, staying inside the allowed files.
