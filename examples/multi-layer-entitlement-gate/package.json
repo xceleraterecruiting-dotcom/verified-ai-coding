@@ -1,0 +1,13 @@
+{
+  "name": "vac-example-multi-layer-entitlement-gate",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fixture-scoped, AST-based enforcement-path checker — a Verified AI Coding executable proof module. Not a general static-analysis framework.",
+  "scripts": {
+    "check": "node scripts/run-fixtures.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

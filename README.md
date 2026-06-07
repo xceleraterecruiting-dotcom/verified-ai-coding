@@ -63,6 +63,14 @@ The example preserves that FAIL end to end — baseline code, five redteam cases
 
 > A loop that never fails proves nothing. The failure is the asset.
 
+## Executable proof modules
+
+The first executable proof module lives at:
+
+`examples/multi-layer-entitlement-gate/`
+
+It is a fixture-scoped AST checker that verifies a protected entry point routes through the canonical decision point. It is intentionally narrow and does not claim to be a general static-analysis framework — it makes one principle (*the tool's output is a lead, not truth; prove the invariant holds across the path*) runnable, with a self-verifying runner over five fixtures.
+
 ## Status
 
 `v0.1` — markdown-first, no backend. This is a practical verification workflow for AI-assisted builds, not a general methodology. It does not try to be a methodology competitor. It tries to make AI prove one feature at a time.
