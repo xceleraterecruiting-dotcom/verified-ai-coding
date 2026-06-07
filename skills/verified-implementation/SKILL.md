@@ -37,17 +37,35 @@ Write invariants as testable predicates, not vibes. "Rejected approvals must nev
 
 Ask explicitly: **is there a business rule here that, if violated, causes real harm** (money moved, content published, access granted, data exposed)? If yes, flag it as a business invariant and require it to be enforced **below the UI** — in the service or domain layer, not in a disabled button or a hidden form field. Note where the real boundary is.
 
-## Step 4 — Identify allowed and forbidden files
+## Step 4 — Map the enforcement path
+
+An invariant usually spans **more than one node**. The rule is decided in one place, but it is supposed to be enforced at every node that can trigger the action. Hardening the node in front of you while a sibling node enforces independently — or not at all — leaves the invariant violated end to end, and the fix *looks* done because its own layer is correct.
+
+> Real session: a two-layer entitlement bug. One session fixed the decision function; a later session fixed a page that calls it. Neither diagnosed that the bug was two-layered — each treated the invariant as satisfied because its own layer was correct. End to end, the invariant was still broken.
+
+Whenever a feature touches an invariant (entitlement, permission, publish-gate, approval, …), put an **enforcement-path map** in the contract:
+
+- **Decision point** — where the rule is canonically decided (the predicate/guard function).
+- **Entry points** — every path that is supposed to enforce the rule: pages, routes, services, jobs, schedulers.
+- **Per entry point** — does it actually route through the canonical decision, gate independently (and is that copy correct?), or not enforce at all?
+
+**Rule:** a fix that touches only ONE node on this path must explicitly state the status of the OTHER nodes — *verified correct*, *assumed correct — NOT verified*, or *out of scope (reason)*. An unverified upstream or downstream node is an **open risk in the contract**, flagged the same way untraced equivalences are (see "Claim verification before remediation"). Going silent on the other nodes is the failure mode.
+
+This is the same principle — *the tool's own output is a lead, not truth* — extended one dimension: from "verify the claims this fix makes" to "verify the invariant holds across every node, not just the one you're editing."
+
+**Concrete anti-pattern:** a fix wires a page to call the canonical entitlement function but never verifies the function itself is correct (it happened to have been fixed in a prior session). The page now ships a correct *call* to a possibly-broken function — green diff, satisfied-looking layer, invariant still violated end to end. Verify the node you call, not just the call to it.
+
+## Step 5 — Identify allowed and forbidden files
 
 List the files the implementation is **allowed** to touch and the files that are **forbidden** (schema, adapters, unrelated modules, UI redesign). This scopes the work now and scopes remediation later. Forbidden-by-default: anything not needed to satisfy the contract.
 
-## Step 5 — Plan the proofs
+## Step 6 — Plan the proofs
 
 - **Tests** (`templates/test-plan.md`): unit, integration, and regression tests that exercise each invariant. Every MUST NEVER gets a test that proves the system refuses it.
 - **Evals** (`templates/eval-plan.md`): only when AI behavior is part of the feature (a model makes a decision, generates content, classifies). Define inputs, expected behavior, and scoring. Skip if there's no AI in the runtime path.
 - **Redteam / bypass cases** (`templates/redteam-plan.md`): adversarial inputs that try to slip past the guard — the rejected approval, the blocked draft, the edited-but-not-approved state. Each case states input → required behavior.
 
-## Step 6 — Observability and ship gates
+## Step 7 — Observability and ship gates
 
 - **Observability**: what must be logged/metered so a violation is visible in production (e.g., log every refused publish attempt with reason).
 - **Ship gates**: the deterministic conditions that must be green to ship — tests pass, type checks pass, every redteam case behaves, invariant enforced below the UI. These are the gates `ship-review` will check against.

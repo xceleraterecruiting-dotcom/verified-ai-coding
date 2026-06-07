@@ -23,6 +23,8 @@ If any of these are missing — especially the invariants or the redteam results
 
 **Reconcile the contract against the project's existing specs**, not only the diff against the contract. The same principle that governs findings — *the tool's own output is a lead, not truth* — applies to the contract itself: a review can trace the code perfectly and still miss that the contract diverged from prior spec language. If the contract and an existing spec disagree, surface it as a finding; don't silently assume the contract wins.
 
+**Check the whole enforcement path, not just the edited node.** An invariant usually spans multiple nodes — the decision point plus every page, route, service, or job that should enforce it. A fix that hardens one node leaves the invariant violated end to end if a sibling node gates independently or not at all. Require the contract's enforcement-path map (see "Map the enforcement path" in `verified-implementation`) and confirm each node's status: verified correct, assumed-not-verified, or out of scope. An unverified upstream/downstream node is a blocker-worthy open risk, not a PASS — even when the edited node is perfect.
+
 ## Step 2 — Build the cold-review bundle
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.
