@@ -71,6 +71,10 @@ The first executable proof module lives at:
 
 It is a fixture-scoped AST checker that verifies a protected entry point routes through the canonical decision point. It is intentionally narrow and does not claim to be a general static-analysis framework — it makes one principle (*the tool's output is a lead, not truth; prove the invariant holds across the path*) runnable, with a self-verifying runner over five fixtures.
 
+## Agentic review (fresh-context / isolated-bundle)
+
+`skills/independent-ship-review/` runs a cold-review bundle through a fresh, tool-isolated Claude reviewer (`scripts/independent-review.mjs`) on a **probe-verified** configuration, and refuses to trust the verdict unless it confirms the isolation held at runtime. It is honestly labeled **fresh-context Claude + bundle-only (enforced standard tools), same-vendor — not adversarial-isolated, not different-vendor**. The capability probes behind it live in [`probe/`](probe/).
+
 ## Status
 
 `v0.1` — markdown-first, no backend. This is a practical verification workflow for AI-assisted builds, not a general methodology. It does not try to be a methodology competitor. It tries to make AI prove one feature at a time.
