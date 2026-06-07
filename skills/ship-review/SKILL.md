@@ -72,3 +72,34 @@ After remediation, re-run gates and re-review.
 ## Step 7 — Ship/no-ship scorecard
 
 Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Safety, Tests, Redteam, Observability) and a single decision — **SHIP** or **DO NOT SHIP**. The scorecard is read-only output. It passes only when the invariant is enforced below the UI and every redteam case behaves correctly.
+
+## Reviewer context
+
+Every ship review must state **reviewer context** — who (or what) actually performed the review, and from what vantage. A verdict is only as independent as the reviewer behind it, and the builder cannot grade its own work from the same context and call it independent validation.
+
+The review result must include:
+- the **reviewer context level** (scale below);
+- whether the reviewer had the **builder's chat history**;
+- whether the reviewer received **only the cold-review bundle**;
+- whether the reviewer was **same-session, fresh-context Claude, different-Claude-model, or different-vendor model**;
+- whether **tool restrictions** were enforced, merely requested, unknown, or not applicable;
+- whether **external API / code egress** occurred;
+- if egress occurred, **which provider/model** was used and whether the bundle was **sanitized or proprietary**.
+
+**Reviewer context levels (weakest → strongest):**
+1. **Weak** — the same session/agent that implemented the change reviewed its own work.
+2. **Fresh-context Claude** — a separate Claude subagent or fresh Claude session reviewed only the cold bundle. Removes builder narrative; still Claude reviewing Claude.
+3. **Different-Claude-model** — a different Claude model reviewed only the cold bundle (e.g. Opus reviewing Sonnet's work). Stronger, still same vendor/family.
+4. **Different-vendor model** — a non-Claude model reviewed only the cold bundle. Stronger independence; requires explicit code-egress approval.
+5. **Different-vendor + isolated tools** — strongest practical mode: different vendor, cold bundle only, explicit egress approval, and tool scope restricted/enforced where supported.
+
+**Rules:**
+- A **PASS without reviewer-context metadata is incomplete evidence.**
+- A **same-session PASS** may be used for local iteration, but must **not** be represented as an independent proof artifact.
+- **Fresh-context Claude** review is better than same-session review, but it is **not** different-model independence.
+- **Different-Claude-model** review is stronger than same-model fresh-context review, but **still not** different-vendor review.
+- **Different-vendor** review requires **explicit egress approval per bundle** before proprietary code leaves the machine.
+- **Deterministic gates outrank model-review judgment** — tests, redteam, typecheck, lint, executable proof modules, CI. Different-vendor review reduces correlated blind spots; it does not become the source of truth.
+- For **proof artifacts, record reviewer context honestly.**
+
+See `docs/reviewer-context.md` for the rationale and the egress policy.

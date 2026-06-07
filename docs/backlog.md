@@ -2,6 +2,17 @@
 
 Deferred improvements. None are v0.1 blockers.
 
+## v0.3 — reviewer independence
+
+- [x] **Reviewer context metadata:** every ship-review result must state Weak / Fresh-context Claude / Different-Claude-model / Different-vendor model / Different-vendor + isolated tools. — *Addressed: `skills/ship-review/SKILL.md` (## Reviewer context), `templates/ship-scorecard.md`, `templates/review-bundle.md`, and `docs/reviewer-context.md`.*
+- [~] **Capability preflight:** verify what this Claude Code version supports for subagents, context isolation, skill forking, model selection, and tool restrictions. — *Read-only preflight run; findings recorded. Enforcement of tool restrictions and model selection is documented/configurable but not test-verified.*
+- [~] **External-review egress policy:** require explicit recording of provider/model, bundle type, and egress approval. — *Policy + recording fields added (`docs/reviewer-context.md`, scorecard); enforcing tooling not built.*
+- [ ] **Agentic independent review:** only build after Claude Code capabilities are verified as enforceable, not merely configurable.
+- [ ] **Different-vendor review path:** build an explicit-egress external reviewer using env-based API keys, sanitized bundles by default, and per-bundle approval for proprietary code.
+- [ ] **Different-vendor + isolated-tools mode:** investigate whether external review can be paired with local read-only tooling without leaking more context than intended.
+- [ ] **Optional hooks:** only after reviewer isolation is proven.
+- [ ] **Bounded remediation agent:** only after an independent/fresh-context review path is real.
+
 ## v0.2
 
 - [~] **v0.2 executable proof gates: partially addressed** by `examples/multi-layer-entitlement-gate/`, a fixture-scoped AST enforcement-path checker with a self-verifying runner. Remaining: CI integration, generalized import tracing, contract schema/linter, and broader enforcement-path verification.

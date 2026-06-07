@@ -2,6 +2,8 @@
 
 The single, self-contained document handed to the cold reviewer. The reviewer reads only this — no repo access — so everything needed for the verdict must be in here. Assemble it, then paste it after the prompt in `prompts/cold-reviewer.md`.
 
+> **Reviewer independence note.** The reviewer must not rely on builder narrative — only on the contents below. The review result must state what inputs were actually reviewed and whether the review was **same-session, fresh-context Claude, different-Claude-model, or different-vendor**. If external API review is used, the result must record whether **code left the machine**, **which provider/model** received it, and whether **explicit egress approval** was given. (See `docs/reviewer-context.md`.)
+
 ## 1. Original request
 
 > (the user's words)
