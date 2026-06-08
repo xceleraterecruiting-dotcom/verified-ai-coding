@@ -35,6 +35,21 @@ List every existing seam/helper/route this slice relies on. *A summary of existi
 - [ ] Every new path routes through the cited seam, or explicitly documents why not.
 - [ ] No contract approval until load-bearing grounding evidence is present.
 
+## Client interpretation contract
+
+Use this section when the slice has a UI/client compose backend seams. *A correct backend seam can still produce a dishonest product if the client misinterprets its result.*
+
+| Backend step | Success outcome | Idempotent-success outcome | Refusal outcome | Error/stale outcome | Client may display | Client must NOT display |
+|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |
+
+- [ ] Every reused route/seam response shape is named.
+- [ ] Idempotent success is distinguished from failure.
+- [ ] Refusal is distinguished from transport/server error.
+- [ ] Partial success in multi-step flows is explicitly represented.
+- [ ] The client does not show the final state until the backend step that creates it succeeds or idempotently succeeds.
+- [ ] Stale/error responses produce a safe refresh/retry/failure state, not optimistic success.
+
 ## Open questions
 
 List anything ambiguous. **Block implementation on any question that affects an invariant.**

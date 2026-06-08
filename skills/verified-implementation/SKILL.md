@@ -109,6 +109,22 @@ For every invariant-bearing state transition, enumerate the **sibling writers / 
 
 If a recovery or retry path decides eligibility by **age**, verify the timestamp actually measures the lifecycle state being recovered — not a convenient nearby one. A creation time does not prove when payment happened; it does not prove when work started. A recovery sweep needs a real lifecycle timestamp (a paid-at, work-started-at, last-attempt-at, or equivalent). **If the correct timestamp is missing or unpopulated, the recovery claim is unproven** — surface it as an open risk, the same as an untraced equivalence.
 
+### Client interpretation of seam outcomes
+
+Enforcing the invariant below the UI is necessary but not sufficient: the client still has to tell the user the truth about what the backend did. **A correct backend seam can still produce a dishonest product if the client misinterprets its result.**
+
+When a slice has a UI/client call an existing backend seam, the contract must specify how the client interprets every meaningful outcome. For each reused route/seam response, record:
+- success statuses / result shapes;
+- idempotent-success statuses / result shapes;
+- refusal statuses / result shapes;
+- stale/error statuses / result shapes;
+- what the client may display after each, and what it must **not** optimistically display;
+- whether a multi-step client sequence can leave a partial state, and how it recovers/refreshes after stale/error.
+
+**When a UI composes proven seams, the contract must define the client's state machine over the seam outcomes.** For multi-step flows, distinguish each step — e.g. *Step A succeeds: approval recorded; Step B succeeds or idempotently succeeds: job queued; Step B refuses or errors: approval may exist, but "queued" must not be shown.* The client may show the strongest state that is actually proven, not the state it hoped to reach.
+
+**Do not mark a client flow complete until the specific backend step that creates that state has succeeded or returned an idempotent-success result.** Record this in the **Client interpretation contract** table of `templates/feature-contract.md` when a UI composes seams.
+
 ## Step 6 — Identify allowed and forbidden files
 
 List the files the implementation is **allowed** to touch and the files that are **forbidden** (schema, adapters, unrelated modules, UI redesign). This scopes the work now and scopes remediation later. Forbidden-by-default: anything not needed to satisfy the contract.

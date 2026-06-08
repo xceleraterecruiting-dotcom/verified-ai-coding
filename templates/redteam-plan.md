@@ -22,6 +22,16 @@ When more than one path can mutate or trigger side effects for the same entity, 
 
 **Pattern (C1):** Actor A begins a transition but hasn't fired the side effect; Actor B (e.g. a recovery worker) sees the same entity as eligible and claims/triggers it. *Required proof:* at most one side effect fires, **or** the second actor observes the entity as no longer eligible (it was moved out of the rival's candidate set before side effects). "Idempotent against its own replay" does **not** imply "safe against a sibling writer."
 
+## Client interpretation cases
+
+When a client calls backend seams, include cases where the backend returns each meaningful outcome and assert the client maps it truthfully (these are the client-layer complement to the quality bar in Notes — keep them outcome-specific):
+
+- backend returns **idempotent success** → client shows success/already-complete, **not** failure;
+- backend returns **refusal** → client shows not-completed with reason, **not** success;
+- **first step succeeds but second step fails** → client shows the partial state, **not** the final state;
+- backend returns **stale/missing-entity error** → client refreshes or shows a safe changed-state failure;
+- duplicate click returns an existing-active/idempotent result → client does **not** show a false failure.
+
 ## Notes
 
 - **Quality bar — a redteam case must *attempt the forbidden action*, not assert the happy path.** Weak ("approve works", "page renders", "button is disabled") only confirms the happy path. Strong cases attack the boundary: a non-owner calls the endpoint directly; the caller forges actor/timestamp/body fields; a stale approval exists but the latest decision rejects; a sibling writer races the original path; a duplicate event replays; a blocked entity is submitted anyway.

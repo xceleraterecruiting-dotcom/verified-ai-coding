@@ -15,6 +15,7 @@ Read-only output of `ship-review`. It records the verdict per dimension and a si
 |---|---|---|
 | **Behavior** — does what the contract says | PASS / FAIL |  |
 | **Grounding** — contract's claims about existing seams matched actual code evidence; impl routed through them, no bypass | PASS / NEEDS_REVIEW / FAIL |  |
+| **Client interpretation** — client maps seam outcomes truthfully (success/idempotent-success/refusal/error distinguished; no optimistic success before the backend creates the state) | PASS / NEEDS_REVIEW / FAIL |  |
 | **Safety** — invariants enforced below the UI | PASS / FAIL |  |
 | **Tests** — exist, pass, exercise invariants | PASS / FAIL |  |
 | **Redteam** — every bypass case behaves | PASS / FAIL |  |

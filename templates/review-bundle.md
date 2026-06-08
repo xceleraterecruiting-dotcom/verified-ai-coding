@@ -28,6 +28,10 @@ Include the **actual evidence** for load-bearing existing code the slice reuses 
 - repository/query behavior; actor/timestamp source; idempotency/claim logic;
 - any code path the new implementation claims to reuse (and proof it routes through it, not around it).
 
+## 4c. Client interpretation evidence
+
+Include when a UI/client composes backend seams: route/seam response statuses and result bodies; client branching logic; multi-step partial-state behavior; stale/error handling; and tests proving the client maps each response truthfully (idempotent-success as success, refusal as not-completed, stale/error as safe refresh — never optimistic success).
+
 ## 5. The diff under review
 
 ```diff

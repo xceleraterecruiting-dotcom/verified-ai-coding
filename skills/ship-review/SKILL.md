@@ -41,6 +41,21 @@ Check whether the contract's description of **existing** code is true — not ju
 
 **Blocker rule:** if the implementation bypasses a seam the contract claimed it reused, return **FAIL** — unless the contract was explicitly updated and re-approved.
 
+## Client interpretation review
+
+When the implementation includes a UI/client layer that calls reused seams, check that the client reports the backend outcome truthfully — a correct seam can still drive a dishonest product. Ask:
+
+- Did the bundle include the seam response statuses / result shapes?
+- Did the contract define what the client displays for success, idempotent success, refusal, and stale/error?
+- Does the implementation actually branch on those outcomes correctly?
+- Does the client avoid optimistic success when only an earlier step succeeded?
+- Does the client treat idempotent success as success, not failure?
+- Does the client recover/refetch on stale/error instead of leaving a false state?
+
+**Verdict rule:** if a client composes backend seams but the bundle does not define or prove the client's interpretation of the seam outcomes, return **NEEDS_REVIEW**, not PASS.
+
+**Failure rule:** if the client shows success for a state the backend did not create, or treats an idempotent-success response as failure in a way that contradicts the contract, return **FAIL** — unless the contract explicitly defines that behavior and the user approved it.
+
 ## Step 2 — Build the cold-review bundle
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.
