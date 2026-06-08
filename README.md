@@ -75,6 +75,21 @@ It is a fixture-scoped AST checker that verifies a protected entry point routes 
 
 `skills/independent-ship-review/` runs a cold-review bundle through a fresh, tool-isolated Claude reviewer (`scripts/independent-review.mjs`) on a **probe-verified** configuration, and refuses to trust the verdict unless it confirms the isolation held at runtime. It is honestly labeled **fresh-context Claude + bundle-only (enforced standard tools), same-vendor — not adversarial-isolated, not different-vendor**. The capability probes behind it live in [`probe/`](probe/).
 
+## v0.4 — the local verification loop
+
+Install once, then run the loop from any repo — an orchestrator (not an agent) that scaffolds artifacts, validates them, runs the fresh-context reviewer, and drafts the scorecard. It never implements code, commits, opens PRs, merges, deploys, or calls external APIs.
+
+```bash
+node scripts/install-global.mjs                      # skills → ~/.claude/skills, support → ~/.verified-ai-coding
+L=~/.verified-ai-coding/scripts/verified-ai-loop.mjs
+node $L new "Fix the thing"   # scaffold .verified-ai/runs/<date>-<slug>/
+node $L bundle <run-dir>      # assemble review-bundle.md (+ git diff)
+node $L review <run-dir>      # fresh-context reviewer → reviewer-result.md (fail-closed on INVALID)
+node $L finalize <run-dir>    # draft final-scorecard.md + pr-body.md  (commit/PR stay human-gated)
+```
+
+Deterministic gates outrank the reviewer; gates are slice-scoped; commit/PR/merge/deploy are always human. Full walkthrough: [`docs/daily-use.md`](docs/daily-use.md). Design rationale: [`docs/v0.4-plan.md`](docs/v0.4-plan.md).
+
 ## Status
 
 `v0.1` — markdown-first, no backend. This is a practical verification workflow for AI-assisted builds, not a general methodology. It does not try to be a methodology competitor. It tries to make AI prove one feature at a time.
