@@ -24,6 +24,7 @@ When more than one path can mutate or trigger side effects for the same entity, 
 
 ## Notes
 
+- **Quality bar — a redteam case must *attempt the forbidden action*, not assert the happy path.** Weak ("approve works", "page renders", "button is disabled") only confirms the happy path. Strong cases attack the boundary: a non-owner calls the endpoint directly; the caller forges actor/timestamp/body fields; a stale approval exists but the latest decision rejects; a sibling writer races the original path; a duplicate event replays; a blocked entity is submitted anyway.
 - Include the "looks approved but isn't" states — partial approval, stale approval, blocked-but-edited, wrong status string.
 - A case that *should allow* matters too: prove the guard isn't so tight it blocks valid actions.
-- Record the **initial actual** behavior when you first run it. Preserving a real failure is the point — a redteam suite that passes on the first try usually isn't testing the boundary.
+- Record the **initial actual** behavior when you first run it. Preserving a real failure is the point — a redteam suite that passes on the first try may still be valid, but ask whether it actually attacked the boundary or merely asserted the happy path.

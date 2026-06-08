@@ -9,6 +9,18 @@ You are about to build a feature. Before you write code, you will make explicit 
 
 > **Stop vibe-coding. Make AI prove the feature.** The most dangerous AI code is the code that looks right and silently violates a business rule below the UI. A disabled button is not a safety boundary.
 
+## Slice mode (pick first)
+
+Not every change needs the full invariant-heavy workflow.
+
+**Full mode** — when the slice touches authorization, payments, webhooks, cron/recovery workers, publishing or external side effects, data writes, schema changes, tenant/user access, approval workflows, safety gates, queues/jobs, idempotency, or anything where "must never happen" matters. Full mode runs the whole workflow below: request → contract → grounding verification → invariants → enforcement-path map → allowed/forbidden files → redteam → implementation plan → test output → review bundle → ship review.
+
+**Light mode** — only for genuinely low-risk changes: copy changes, static content, small visual-only components, placeholder UI, layout-only changes, docs-only updates. Light mode still requires: request, allowed/forbidden files, an acceptance check, and test/smoke evidence appropriate to the change.
+
+**Escalation:** if a Light-mode slice uncovers an invariant, a write path, an authorization boundary, an external side effect, or a recovery/idempotency concern, escalate to Full mode **before** implementation.
+
+> **Ceremony is not rigor; use Full mode when the risk is real, and Light mode when the change is truly low-risk.**
+
 ## Step 0 — Read project context
 
 If a project context file exists (`templates/project-context.md` filled in, a `PROJECT-CONTEXT.md`, a `CLAUDE.md`, or similar), read it first. Pull out: the domain, the critical invariants the business already cares about, the architecture layers (where do guards belong?), and the test conventions. If no context exists, note that and infer carefully from the codebase — do not assume.
@@ -21,7 +33,31 @@ Use `templates/feature-contract.md`. Capture:
 - **Inputs, outputs, and the boundary** where the behavior is enforced.
 - **Open questions.** If the request is ambiguous on anything that affects an invariant, ask now. **Require contract clarity before implementation** — do not paper over ambiguity with a guess.
 
-## Step 2 — State the invariants
+## Step 2 — Grounding verification
+
+Before contract approval, any claim about **existing** code that the slice depends on must be grounded in actual code evidence. This is the same discipline as "Claim verification before remediation" and *the tool's own output is a lead, not truth*, pointed at the contract's premises: **a summary of existing code is a claim; the grounding evidence is the proof.**
+
+It applies especially when the contract says things like: "reuses the canonical helper," "routes through the existing seam," "authorizes from DB state," "re-reads from the database," "actor is session-bound," "timestamp is server-controlled," "caller input cannot influence the decision," "route is owner-gated," "existing seam is idempotent," "existing guard already enforces this," "this route only accepts X," "this function ignores Y," or "this writer participates in the claim guard."
+
+For each load-bearing existing seam, the contract must show:
+- exact file / function / route;
+- the decision point;
+- what data it reads;
+- what caller input it ignores;
+- whether it reads DB state or trusts request state;
+- whether actor/timestamp are server- or caller-controlled;
+- whether the new slice routes through it or bypasses it;
+- the actual evidence used: pasted snippet, line-level summary, or command output.
+
+Record this in the **Grounding verification** table of `templates/feature-contract.md`.
+
+**Rule:** a contract that depends on an existing seam is not approval-ready until the grounding evidence for that seam is present.
+
+> **Polished planning artifacts do not prove the premise; the existing code must be verified before the contract can rely on it.**
+
+> **If the contract says 'reuse the proven seam,' the grounding section must prove that the new path actually routes through that seam and does not create a parallel path.**
+
+## Step 3 — State the invariants
 
 This is the heart of the skill. Before any code, write:
 
@@ -33,11 +69,11 @@ Then fill `templates/invariant-checklist.md`:
 
 Write invariants as testable predicates, not vibes. "Rejected approvals must never create a publish job" — not "handle rejection properly."
 
-## Step 3 — Call the business-invariant risk
+## Step 4 — Call the business-invariant risk
 
 Ask explicitly: **is there a business rule here that, if violated, causes real harm** (money moved, content published, access granted, data exposed)? If yes, flag it as a business invariant and require it to be enforced **below the UI** — in the service or domain layer, not in a disabled button or a hidden form field. Note where the real boundary is.
 
-## Step 4 — Map the enforcement path
+## Step 5 — Map the enforcement path
 
 An invariant usually spans **more than one node**. The rule is decided in one place, but it is supposed to be enforced at every node that can trigger the action. Hardening the node in front of you while a sibling node enforces independently — or not at all — leaves the invariant violated end to end, and the fix *looks* done because its own layer is correct.
 
@@ -73,17 +109,17 @@ For every invariant-bearing state transition, enumerate the **sibling writers / 
 
 If a recovery or retry path decides eligibility by **age**, verify the timestamp actually measures the lifecycle state being recovered — not a convenient nearby one. A creation time does not prove when payment happened; it does not prove when work started. A recovery sweep needs a real lifecycle timestamp (a paid-at, work-started-at, last-attempt-at, or equivalent). **If the correct timestamp is missing or unpopulated, the recovery claim is unproven** — surface it as an open risk, the same as an untraced equivalence.
 
-## Step 5 — Identify allowed and forbidden files
+## Step 6 — Identify allowed and forbidden files
 
 List the files the implementation is **allowed** to touch and the files that are **forbidden** (schema, adapters, unrelated modules, UI redesign). This scopes the work now and scopes remediation later. Forbidden-by-default: anything not needed to satisfy the contract.
 
-## Step 6 — Plan the proofs
+## Step 7 — Plan the proofs
 
 - **Tests** (`templates/test-plan.md`): unit, integration, and regression tests that exercise each invariant. Every MUST NEVER gets a test that proves the system refuses it.
 - **Evals** (`templates/eval-plan.md`): only when AI behavior is part of the feature (a model makes a decision, generates content, classifies). Define inputs, expected behavior, and scoring. Skip if there's no AI in the runtime path.
 - **Redteam / bypass cases** (`templates/redteam-plan.md`): adversarial inputs that try to slip past the guard — the rejected approval, the blocked draft, the edited-but-not-approved state. Each case states input → required behavior.
 
-## Step 7 — Observability and ship gates
+## Step 8 — Observability and ship gates
 
 - **Observability**: what must be logged/metered so a violation is visible in production (e.g., log every refused publish attempt with reason).
 - **Ship gates**: the deterministic conditions that must be green to ship — tests pass, type checks pass, every redteam case behaves, invariant enforced below the UI. These are the gates `ship-review` will check against.

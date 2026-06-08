@@ -20,6 +20,14 @@ The single, self-contained document handed to the cold reviewer. The reviewer re
 
 > (domain, the architecture layer where invariants must be enforced, test conventions)
 
+## 4b. Grounding evidence
+
+Include the **actual evidence** for load-bearing existing code the slice reuses — not only prose summaries. *A summary of existing code is a claim; the grounding evidence is the proof.* Required when applicable:
+
+- existing guard/seam code; route body; accepted request-body shape;
+- repository/query behavior; actor/timestamp source; idempotency/claim logic;
+- any code path the new implementation claims to reuse (and proof it routes through it, not around it).
+
 ## 5. The diff under review
 
 ```diff

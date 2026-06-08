@@ -27,6 +27,20 @@ If any of these are missing — especially the invariants or the redteam results
 
 **Check for sibling-writer races.** A claim/transition guard only protects the actors that go through it. If two entry points can mutate or trigger side effects for the same entity (webhook vs cron, user action vs worker, retry vs original request), confirm the tests cover *interleavings across those different actors* — not only duplicate delivery through one path. "Idempotent against its own replay" is not "idempotent against a sibling writer." If a recovery/retry path keys on age, confirm the timestamp measures the right lifecycle state. Untested cross-entrypoint concurrency is an open risk, not a PASS.
 
+## Grounding review
+
+Check whether the contract's description of **existing** code is true — not just whether the diff is internally consistent. *A summary of existing code is a claim; the grounding evidence is the proof.* For every load-bearing reused seam, helper, guard, route, or repository, ask:
+
+- Did the bundle include the actual evidence for this existing code?
+- Does the cited code match the contract's summary?
+- Did the implementation route through the cited seam, or create a parallel path around it?
+- Did the tests exercise the seam itself, or a mock/copy of it?
+- Is the safety claim based on real code, or on the builder's description of it?
+
+**Verdict rule:** if a contract relies on an existing seam but the bundle does not include grounding evidence for that seam, return **NEEDS_REVIEW**, not PASS.
+
+**Blocker rule:** if the implementation bypasses a seam the contract claimed it reused, return **FAIL** — unless the contract was explicitly updated and re-approved.
+
 ## Step 2 — Build the cold-review bundle
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.
