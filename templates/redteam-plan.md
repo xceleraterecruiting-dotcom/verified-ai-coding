@@ -10,6 +10,18 @@ Adversarial cases that try to slip past the guard. Each MUST NEVER invariant nee
 | 2 |  |  | reject |  |
 | 3 |  |  | allow |  |
 
+## Cross-entrypoint race cases
+
+When more than one path can mutate or trigger side effects for the same entity, duplicate-delivery cases are not enough — test **interleavings across the different actors** (see "Sibling writers and cross-entrypoint races" in `verified-implementation`).
+
+| # | Actor A (mid-transition) | Actor B (claims/triggers) | Required behavior |
+|---|---|---|---|
+| C1 | original request has transitioned the entity but not yet fired the side effect | a cron/worker sees it as eligible and claims it | **at most one side effect fires** |
+| C2 | two copies of the *same* path (A vs A) | — | one wins; the other no-ops |
+| C3 | recovery path keys on age | entity is recent / wrong-timestamp | does **not** claim a fresh entity (right lifecycle clock) |
+
+**Pattern (C1):** Actor A begins a transition but hasn't fired the side effect; Actor B (e.g. a recovery worker) sees the same entity as eligible and claims/triggers it. *Required proof:* at most one side effect fires, **or** the second actor observes the entity as no longer eligible (it was moved out of the rival's candidate set before side effects). "Idempotent against its own replay" does **not** imply "safe against a sibling writer."
+
 ## Notes
 
 - Include the "looks approved but isn't" states — partial approval, stale approval, blocked-but-edited, wrong status string.

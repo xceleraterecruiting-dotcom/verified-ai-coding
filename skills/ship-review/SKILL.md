@@ -25,6 +25,8 @@ If any of these are missing — especially the invariants or the redteam results
 
 **Check the whole enforcement path, not just the edited node.** An invariant usually spans multiple nodes — the decision point plus every page, route, service, or job that should enforce it. A fix that hardens one node leaves the invariant violated end to end if a sibling node gates independently or not at all. Require the contract's enforcement-path map (see "Map the enforcement path" in `verified-implementation`) and confirm each node's status: verified correct, assumed-not-verified, or out of scope. An unverified upstream/downstream node is a blocker-worthy open risk, not a PASS — even when the edited node is perfect.
 
+**Check for sibling-writer races.** A claim/transition guard only protects the actors that go through it. If two entry points can mutate or trigger side effects for the same entity (webhook vs cron, user action vs worker, retry vs original request), confirm the tests cover *interleavings across those different actors* — not only duplicate delivery through one path. "Idempotent against its own replay" is not "idempotent against a sibling writer." If a recovery/retry path keys on age, confirm the timestamp measures the right lifecycle state. Untested cross-entrypoint concurrency is an open risk, not a PASS.
+
 ## Step 2 — Build the cold-review bundle
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.

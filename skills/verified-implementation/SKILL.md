@@ -55,6 +55,24 @@ This is the same principle — *the tool's own output is a lead, not truth* — 
 
 **Concrete anti-pattern:** a fix wires a page to call the canonical entitlement function but never verifies the function itself is correct (it happened to have been fixed in a prior session). The page now ships a correct *call* to a possibly-broken function — green diff, satisfied-looking layer, invariant still violated end to end. Verify the node you call, not just the call to it.
 
+### Sibling writers and cross-entrypoint races
+
+The enforcement-path map is also a **concurrency** map. The same principle — more than one node touches the invariant — has a second failure mode: two entry points can mutate or trigger side effects for the **same entity at the same time**. A claim/transition guard only protects the actors that **participate in that guard**. A sibling writer that moves the state without going through the claim can still race it.
+
+> Real session: a payment-triggered job was made replay-safe (duplicate deliveries no-op). A recovery worker was added to repair crash windows. The tests covered *worker vs worker*. The reviewer caught *worker vs the original trigger*: the original path transitioned the entity and then fired the side effect a moment later; the recovery worker could see that same entity as eligible in the gap and claim/trigger it — two side effects, because the original path never participated in the worker's claim.
+
+For every invariant-bearing state transition, enumerate the **sibling writers / trigger paths** (e.g. webhook vs cron, user action vs worker, retry loop vs original request, approval route vs publish route, publisher retry vs publisher callback). For each, ask:
+
+- Can both paths observe a state where each believes it owns the work?
+- Do both paths participate in the **same** claim/transition guard?
+- Can one path fire side effects while the other also fires them?
+- Is the row moved **out of the rival path's candidate set** *before* side effects fire?
+- Is the stale/recovery decision based on the **correct lifecycle timestamp** (see below)?
+
+### Staleness-clock check
+
+If a recovery or retry path decides eligibility by **age**, verify the timestamp actually measures the lifecycle state being recovered — not a convenient nearby one. A creation time does not prove when payment happened; it does not prove when work started. A recovery sweep needs a real lifecycle timestamp (a paid-at, work-started-at, last-attempt-at, or equivalent). **If the correct timestamp is missing or unpopulated, the recovery claim is unproven** — surface it as an open risk, the same as an untraced equivalence.
+
 ## Step 5 — Identify allowed and forbidden files
 
 List the files the implementation is **allowed** to touch and the files that are **forbidden** (schema, adapters, unrelated modules, UI redesign). This scopes the work now and scopes remediation later. Forbidden-by-default: anything not needed to satisfy the contract.
