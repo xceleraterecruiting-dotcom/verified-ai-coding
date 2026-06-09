@@ -32,6 +32,13 @@ Include the **actual evidence** for load-bearing existing code the slice reuses 
 
 Include when a UI/client composes backend seams: route/seam response statuses and result bodies; client branching logic; multi-step partial-state behavior; stale/error handling; and tests proving the client maps each response truthfully (idempotent-success as success, refusal as not-completed, stale/error as safe refresh — never optimistic success).
 
+## 4d. Triage & scope (if from a broad audit)
+
+Include when the work originated from a broad request ("fix all issues," "audit the repo"):
+- the **triage report** (`audit-triage.md`) and the **single selected slice/cluster** that became this diff;
+- grounding levels of the load-bearing findings behind the slice;
+- the **allowed/forbidden files** for this run and the **scope-check result** (`node scripts/check-allowed-files.mjs <run-dir>/allowed-forbidden-files.md` → PASS/FAIL). *Allowed-files is not guidance; it is a gate.*
+
 ## 5. The diff under review
 
 ```diff
@@ -40,7 +47,7 @@ Include when a UI/client composes backend seams: route/seam response statuses an
 
 ## 6. Test / eval / redteam results
 
-> Paste **actual run output**, not intentions. For each redteam case: input → required behavior → observed behavior.
+> Paste **actual run output**, not intentions. Label each result with its **proof depth** (SOURCE-TRACE / UNIT-MOCK / SEAM-LEVEL / ROUTE-LEVEL / DB-REAL / LIVE-SMOKE / UI-CLIENT / OPERATOR-CHECK) — *a passing mock can prove intent while leaving the real failure mode untested.* For each redteam case: input → required behavior → observed behavior.
 
 ```
 (test runner output)

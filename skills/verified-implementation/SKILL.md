@@ -9,6 +9,37 @@ You are about to build a feature. Before you write code, you will make explicit 
 
 > **Stop vibe-coding. Make AI prove the feature.** The most dangerous AI code is the code that looks right and silently violates a business rule below the UI. A disabled button is not a safety boundary.
 
+## Audit triage (broad requests go here first)
+
+A broad request — "identify all issues," "fix all issues," "audit the repo," "solve everything," "remediate everything" — must **not** go straight to implementation. It first produces a **triage report** (`templates/audit-triage.md`).
+
+> **Broad audits produce queues, not diffs.**
+
+The triage report scores each finding: ID · Severity · Claim · File/function · Grounding level · Evidence · Impact/invariant · Reproducible? · Minimal fix surface · Tests required · Mode · Recommended slice?
+
+**Severity:** `BLOCKER` (security, data loss, payment, authz, deploy-breaking, outage, invariant violation) · `HIGH` (real prod bug, clear impact, not immediate data/security loss) · `MEDIUM` (correctness/reliability/observability/maintainability) · `LOW` (cleanup/style/perf/docs/speculative) · `INVALID / RETRACTED` (proven false) · `NEEDS GROUNDING` (not proven from source).
+
+**Rules:**
+- Do not combine unrelated findings into one implementation, and do not implement directly from a broad audit report.
+- After triage, select the **smallest high-value slice**; produce a contract for that slice only; stop for approval before implementing.
+- Any auth / payment / webhook / cron / data-write / schema issue requires **Full mode**.
+- Multiple BLOCKER/HIGH findings → still fix **one issue cluster per run**, unless the user explicitly approves a bundled remediation **and** the contract proves the findings share one invariant and one fix surface.
+
+> **Verified AI Coding fixes one approved issue cluster at a time.**
+
+### Grounding ledger
+
+Every finding (and every load-bearing contract claim) carries a grounding level:
+- ✅ **FIRST-HAND SOURCE** — the model read the exact file/function/route in this run.
+- 📎 **QUOTED / INDIRECT** — another agent/tool/grep/summary/prior run quoted the source; the current model did not re-read the load-bearing code.
+- ❌ **UNPROVEN** — not grounded.
+- 🧪 **REPRODUCED** — behavior reproduced with a test, command, or local/live run.
+- 🔁 **RETRACTED** — disproven; must not be remediated (include the disproof).
+
+**Rules:** BLOCKER/HIGH findings cannot be implemented from 📎 or ❌ grounding; upgrade any load-bearing claim to ✅ or 🧪 before contract approval. A claim may stay in the queue as `NEEDS GROUNDING` but cannot enter implementation. This is the same spine as Step 2 grounding verification — pointed at audit findings.
+
+> **A finding is not actionable until its grounding level matches its risk.**
+
 ## Slice mode (pick first)
 
 Not every change needs the full invariant-heavy workflow.
@@ -128,6 +159,8 @@ When a slice has a UI/client call an existing backend seam, the contract must sp
 ## Step 6 — Identify allowed and forbidden files
 
 List the files the implementation is **allowed** to touch and the files that are **forbidden** (schema, adapters, unrelated modules, UI redesign). This scopes the work now and scopes remediation later. Forbidden-by-default: anything not needed to satisfy the contract.
+
+> **Allowed-files is not guidance; it is a gate.** Record the lists in `allowed-forbidden-files.md` and check the diff against them mechanically: `node scripts/check-allowed-files.mjs <run-dir>/allowed-forbidden-files.md` (a scope check, not a security sandbox). A changed file outside the allowed list — or any file under the forbidden list — fails the gate until the contract is updated and re-approved.
 
 ## Step 7 — Plan the proofs
 

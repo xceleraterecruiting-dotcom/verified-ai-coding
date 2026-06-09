@@ -17,13 +17,16 @@ Copies support files to `~/.verified-ai-coding/` and installs skills to `~/.clau
 ```bash
 L=~/.verified-ai-coding/scripts/verified-ai-loop.mjs
 
+# → BROAD REQUEST ("fix all issues", "audit the repo")? triage FIRST into audit-triage.md,
+#   then select ONE approved slice/cluster and run `new` for just that. Don't implement the queue.
 node $L new "Recover stuck paid evaluations"   # scaffold .verified-ai/runs/<date>-<slug>/
 # → fill request/contract/enforcement-path/redteam/implementation-plan/allowed-forbidden-files
 # → APPROVE SCOPE  (human gate)
 # → implement inside allowed files
-# → paste slice-scoped output into test-output.md:
+# → paste slice-scoped output into test-output.md (label each result with its proof depth):
 #     npx vitest run <slice test file>
 #     npx tsc --noEmit -p tsconfig.json | grep <touched files>
+node scripts/check-allowed-files.mjs <run-dir>/allowed-forbidden-files.md  # scope gate: diff ⊆ allowed
 node $L status <run-dir>     # which artifacts are filled; warns on changes outside allowed list
 node $L bundle <run-dir>     # validates inputs, captures git diff, assembles review-bundle.md
 node $L review <run-dir>     # runs fresh-context reviewer → reviewer-result.md (fail-closed on INVALID)

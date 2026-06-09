@@ -4,11 +4,13 @@ Adversarial cases that try to slip past the guard. Each MUST NEVER invariant nee
 
 ## Cases
 
-| # | Attack / edge input | Invariant targeted | Required behavior | Initial actual (if known) |
-|---|---|---|---|---|
-| 1 |  |  | reject |  |
-| 2 |  |  | reject |  |
-| 3 |  |  | allow |  |
+| # | Attack / edge input | Invariant targeted | Required behavior | Proof depth | Initial actual (if known) |
+|---|---|---|---|---|---|
+| 1 |  |  | reject |  |  |
+| 2 |  |  | reject |  |  |
+| 3 |  |  | allow |  |  |
+
+**Proof depth** (per case): SOURCE-TRACE / UNIT-MOCK / SEAM-LEVEL / ROUTE-LEVEL / DB-REAL / LIVE-SMOKE / UI-CLIENT / OPERATOR-CHECK. *A passing mock can prove intent while leaving the real failure mode untested* — a `reject` proven only at `UNIT-MOCK` over logic whose real failure mode is a `DB-REAL` race is an advisory open risk, not a satisfied case.
 
 ## Cross-entrypoint race cases
 

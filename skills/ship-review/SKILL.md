@@ -16,7 +16,8 @@ Collect everything the reviewer needs:
 - The **feature contract** and **invariant checklist** from `verified-implementation` (must-always / must-never).
 - **Project context** (domain, layers, conventions).
 - The **git diff** under review (`git diff`, or the PR diff).
-- **Test / eval / redteam outputs** — actual run results, not "should pass."
+- **Test / eval / redteam outputs** — actual run results, not "should pass," each labeled with its **proof depth** (see `templates/test-output.md`: SOURCE-TRACE / UNIT-MOCK / SEAM-LEVEL / ROUTE-LEVEL / DB-REAL / LIVE-SMOKE / UI-CLIENT / OPERATOR-CHECK).
+- If the work came from a broad audit, the **triage report** (`templates/audit-triage.md`) and the **selected slice** it was cut down to.
 - The **rubric** (the ship gates from the contract).
 
 If any of these are missing — especially the invariants or the redteam results — say so. A review without invariants is a vibe check.
@@ -55,6 +56,23 @@ When the implementation includes a UI/client layer that calls reused seams, chec
 **Verdict rule:** if a client composes backend seams but the bundle does not define or prove the client's interpretation of the seam outcomes, return **NEEDS_REVIEW**, not PASS.
 
 **Failure rule:** if the client shows success for a state the backend did not create, or treats an idempotent-success response as failure in a way that contradicts the contract, return **FAIL** — unless the contract explicitly defines that behavior and the user approved it.
+
+## Audit & scope review
+
+If the change originated from a broad request ("fix all issues," "audit the repo"), confirm it went through triage rather than straight to a sweeping diff:
+
+- Is there a triage report, and was a **single approved slice/cluster** selected — not the whole queue implemented at once?
+- Do the load-bearing findings behind the slice carry grounding levels (✅/🧪) appropriate to their severity? A BLOCKER/HIGH acted on from 📎 or ❌ grounding is **NEEDS_REVIEW** until upgraded.
+
+**Scope gate (mechanical).** Run the allowed-files check against the run's declared scope:
+
+```
+node scripts/check-allowed-files.mjs <run-dir>/allowed-forbidden-files.md
+```
+
+If the changed files exceed the allowed list — or touch anything forbidden — the verdict is **FAIL** until the contract's allowed/forbidden lists are updated and re-approved. *Allowed-files is not guidance; it is a gate*, and scope creep in a diff is a finding, not a footnote. (This is a scope check, not a security sandbox.)
+
+**Proof-depth review.** For each ship gate, confirm the evidence's proof depth actually reaches the failure mode it claims to cover. *A passing mock can prove intent while leaving the real failure mode untested.* A safety claim whose only evidence is `UNIT-MOCK` over logic whose real failure mode is `DB-REAL` or a cross-entrypoint race is **NEEDS_REVIEW**, not PASS, until exercised at the right depth or explicitly accepted as an advisory open risk.
 
 ## Step 2 — Build the cold-review bundle
 
@@ -102,7 +120,7 @@ After remediation, re-run gates and re-review.
 
 ## Step 7 — Ship/no-ship scorecard
 
-Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Safety, Tests, Redteam, Observability) and a single decision — **SHIP** or **DO NOT SHIP**. The scorecard is read-only output. It passes only when the invariant is enforced below the UI and every redteam case behaves correctly.
+Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Grounding, Client-interpretation, Safety, Tests, Redteam, Observability), a **Scope** row (allowed-files gate PASS/FAIL), and a single decision — **SHIP** or **DO NOT SHIP**. Each evidence row carries its proof-depth label so a green check can't hide a shallow proof. The scorecard is read-only output. It passes only when the invariant is enforced below the UI, the diff is within approved scope, and every redteam case behaves correctly.
 
 ## Reviewer context
 

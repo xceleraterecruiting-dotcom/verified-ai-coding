@@ -11,15 +11,20 @@ Read-only output of `ship-review`. It records the verdict per dimension and a si
 
 ## Dimensions
 
-| Dimension | Verdict | Evidence |
+Each evidence cell carries a **proof-depth label** (SOURCE-TRACE / UNIT-MOCK / SEAM-LEVEL / ROUTE-LEVEL / DB-REAL / LIVE-SMOKE / UI-CLIENT / OPERATOR-CHECK) so a green verdict can't hide a shallow proof. *A passing mock can prove intent while leaving the real failure mode untested.*
+
+| Dimension | Verdict | Evidence (+ proof depth) |
 |---|---|---|
 | **Behavior** — does what the contract says | PASS / FAIL |  |
 | **Grounding** — contract's claims about existing seams matched actual code evidence; impl routed through them, no bypass | PASS / NEEDS_REVIEW / FAIL |  |
 | **Client interpretation** — client maps seam outcomes truthfully (success/idempotent-success/refusal/error distinguished; no optimistic success before the backend creates the state) | PASS / NEEDS_REVIEW / FAIL |  |
+| **Scope** — diff within approved allowed/forbidden files (`check-allowed-files.mjs`) | PASS / FAIL |  |
 | **Safety** — invariants enforced below the UI | PASS / FAIL |  |
-| **Tests** — exist, pass, exercise invariants | PASS / FAIL |  |
+| **Tests** — exist, pass, exercise invariants at adequate proof depth | PASS / FAIL |  |
 | **Redteam** — every bypass case behaves | PASS / FAIL |  |
 | **Observability** — violations visible in prod | PASS / FAIL |  |
+
+> If the work came from a broad audit, link the **triage report** and name the **single selected slice** here; deferred findings stay in the queue, not in this diff.
 
 ## Reviewer context
 

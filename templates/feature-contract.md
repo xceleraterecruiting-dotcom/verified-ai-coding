@@ -23,9 +23,11 @@ The agreement about what is being built, written before code. If anything here i
 
 List every existing seam/helper/route this slice relies on. *A summary of existing code is a claim; the grounding evidence is the proof.* Fill this before contract approval.
 
-| Claim | File/function/route | Evidence checked | What it reads | What it ignores | New slice routes through it? |
-|---|---|---|---|---|---|
-|  |  |  |  |  |  |
+Each claim carries a **grounding level**: ✅ FIRST-HAND (read the exact file/function/route this run) · 📎 QUOTED/INDIRECT (a tool/grep/summary/prior run quoted it; not re-read here) · ❌ UNPROVEN · 🧪 REPRODUCED. A load-bearing claim must be ✅ or 🧪 before approval — 📎/❌ is not approvable for anything safety-bearing.
+
+| Claim | Grounding level | File/function/route | Evidence checked | What it reads | What it ignores | New slice routes through it? |
+|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |
 
 - [ ] Every reused seam has actual code evidence (snippet / line-level summary / command output).
 - [ ] Every "canonical helper" claim names the helper and shows why it is canonical.
