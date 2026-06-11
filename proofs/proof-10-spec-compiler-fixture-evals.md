@@ -205,10 +205,42 @@ Rubric-only gaps = none yet. Fixture ambiguity = none claimed. The recurring sha
 has one or two named planning blind spots, closable by surgical lenses without overfitting — is
 the failure-class library's design brief, accumulating evidence before it gets built.
 
+## XR-orchestration eval round — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
+
+Same protocol (fence held, grammar-read disclosed; lint verified locally).
+
+- **Lint:** structurally clean first pass; BLOCKED on 2 high-severity OQs — stable dedupe
+  identity + lifecycle, and re-delivery with corrected facts. L2 with an explicit, unprompted
+  **escalation trigger** recorded ("if OQ-8 reveals an opt-out/consent obligation … escalates to
+  L3 and the plan must be re-compiled").
+- **Plan-review verdict: PASS.** Payment/status lens applied to the state machine and scored YES
+  (ledger insert + draft in one transaction; concurrent-worker and overlap-guard tests; the
+  stale/superseded case surfaced as blocking OQ-2 rather than guessed). Identity lens judged NOT
+  APPLICABLE — and the plan itself had pre-recorded that non-applicability with reasoning, the
+  first negative lens attestation observed. AI-output lens PARTIAL with recorded rationale.
+- **Q8: 6 HIT / 6 — zero non-HITs, no categories needed.** All real 1.10b review findings would
+  have been forced: dedupe identity via a *blocking* OQ (the compiler's designed behavior for
+  unresolvable identity ambiguity), impossible-date rejection with named STRONG_RED, pure
+  validation slice making no-persist structural, FAILED-run finalization incl. crash-mid-run,
+  error allowlist naming "raw model output" with a red-team substring test, and
+  provenance-required-to-enqueue. Reviewer caveat recorded: source URL never named specifically —
+  the blocked OQ is the forcing function.
+- **Unscored observations (consistent with the governance fixture):** no generator-side
+  golden/eval obligations (pipeline internals declared a non-goal); traceability is
+  model-call-ID-only, with model id + prompt version deferred to "the engine's existing
+  traceability convention."
+
+**Lens-graduation note:** generation-side traceability depth and generator goldens have now
+recurred across BOTH AI-output fixtures (G6–G8 partials on governance; observations (a)/(b)
+here). The "pattern repeats" bar set by the identity-lens remediation is met — the **AI-output
+depth lens** (generation provenance fields named explicitly + generator golden obligations) is
+the graduated candidate. Not added this round, per scope.
+
 ### Acceptance line (per the amended v0.6 scope)
 
 v0.6 planning layer implemented · CPA full eval complete (+ identity-lens remediation round) ·
-XR-governance full eval complete · **GroundTruth full eval complete (PASS, 9/1/0)** · cosmetic
-light eval complete · XR-orchestration fixture committed/eval pending · auth fixture pending ·
-multi-slice fixture pending · **overall: PARTIAL DOGFOOD** (three of four real-system fixtures
-fully evaluated; synthetic decomposition/auth sanity checks outstanding).
+XR-governance full eval complete · GroundTruth full eval complete (PASS, 9/1/0) ·
+**XR-orchestration full eval complete (PASS, 6/6 HIT)** · cosmetic light eval complete · auth
+fixture pending · multi-slice fixture pending · **overall: PARTIAL DOGFOOD** (all four
+real-system fixtures fully evaluated; the two synthetic sanity checks — auth tenancy,
+multi-slice decomposition — outstanding).
