@@ -28,7 +28,7 @@ const CLAUDE_SKILLS = join(homedir(), '.claude', 'skills')
 /** Support dirs copied verbatim into ~/.verified-ai-coding (structure preserved). */
 const COPY_DIRS = ['templates', 'prompts', 'scripts', 'agents', 'examples/independent-review-sample', 'examples/regression-check-sample']
 /** Skills installed into ~/.claude/skills with references rewritten. */
-const SKILLS = ['verified-implementation', 'ship-review', 'independent-ship-review']
+const SKILLS = ['verified-implementation', 'ship-review', 'independent-ship-review', 'spec-compiler']
 /** Reference prefixes rewritten to absolute VAC_HOME paths. (probe/ is left relative on purpose.) */
 const REWRITE_RE = /(?<![\w/])(templates|prompts|scripts|agents|examples)\/([A-Za-z0-9._/-]+\.(?:md|mjs))/g
 

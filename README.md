@@ -21,12 +21,24 @@ AI writes code that *looks* right and passes a glance. The failure mode isn't sy
 
 ## What this pack does
 
-Two skills carry the workflow:
+Three skills carry the workflow, macro to micro:
 
 | Skill | When it runs | What it produces |
 |---|---|---|
-| **`verified-implementation`** | You're about to build a feature | A feature contract, must-always / must-never invariants, business-invariant risk call, allowed/forbidden files, test + eval + redteam plans, observability and ship gates — *before any code* |
+| **`spec-compiler`** *(v0.6)* | You have a SPEC — a feature/product description, not yet a bounded change | Nine planning documents (intake with verbatim provenance, requirements, non-goals, domain model, invariants, risk map, acceptance criteria, implementation slices, open questions), structure-gated by `scripts/plan-lint.mjs` and cold-reviewed against a pre-registered rubric. **No code** — this is verified decomposition, not autonomous coding. High-risk ambiguity blocks until resolved. |
+| **`verified-implementation`** | You're about to build a feature (or one compiled slice) | A feature contract, must-always / must-never invariants, business-invariant risk call, allowed/forbidden files, test + eval + redteam plans, observability and ship gates — *before any code* |
 | **`ship-review`** | You have a diff and want to ship | A model-agnostic cold-review bundle, a PASS / NEEDS_REVIEW / FAIL verdict, blockers turned into proof obligations, a bounded remediation prompt when needed, and a ship/no-ship scorecard |
+
+The pipeline: **spec → slices → (contract → code → review) per slice.** One slice = one
+verified-implementation run = one ship-review.
+
+## Versions
+
+- **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
+  regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
+- **v0.6 — spec → verified implementation planning**: spec-compiler skill, plan-lint gate,
+  plan-review rubric, six planning fixtures (payments, AI-output governance, orchestration
+  idempotency, auth, multi-slice, cosmetic), proof-10 fixture evals.
 
 The rule that holds the whole thing together:
 
@@ -77,6 +89,7 @@ under `verification/transcripts/`.
 - **Not independent or cross-vendor review yet.** Every verdict recorded here is same-vendor (Claude reviewing Claude), fresh-context, with tool isolation *attested* rather than enforced. The reviewer-context metadata records this honestly per review.
 - **Not bug prevention.** The session that built this introduced bugs in every artifact class — page, fixes, tests, evidence bundles. The harness detected them; it did not prevent them.
 - **Not proof that AI code is correct.** The defensible claim: it catches classes of business-invariant failures that normal green gates miss, and it forces every PASS to state its evidence boundary.
+- **Not autonomous coding.** `spec-compiler` plans; it writes no code (plan-lint mechanically rejects code in planning docs). Planning outputs are model judgment with mechanical structure checks — the risk classification is model-authored with mandatory spec citations, validated for shape, and challenged by a cold plan-review; a script that pretended to classify risk semantically would be false confidence.
 
 ## Quick start
 
