@@ -276,8 +276,14 @@ acceptable limitation ×1 (AT5).
 
 **Recommendation: Option 2 — tag `v0.6-rc1`,** with the four named items as the v0.7 work list
 (payment-depth lens → re-run CPA + multi-slice; AI-output depth lens → re-run one XR fixture;
-evidence-sufficiency lens; plan-lint PO-mapping rule + unit tests). Decision is the operator's to
-ratify; recorded here as the builder's recommendation.
+evidence-sufficiency lens; plan-lint PO-mapping rule + unit tests).
+
+**RATIFIED by the operator, 2026-06-11: Option 2. Tagged `v0.6-rc1` — a release candidate, not a
+full release**, because two evaluated fixtures ended NEEDS_REVISION; supportable as rc1 because
+the suite demonstrates senior-grade decomposition (7 fixtures, 41/9/0 post-remediation, every
+non-HIT categorized, the only-ever MISS closed by a verified lens that then generalized across
+domains, ambiguity blocking and L2/L3 self-escalation working, no autonomous coding added). The
+four-item v0.7 backlog above is the documented gap list.
 
 ## Auth-tenancy eval — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
 
