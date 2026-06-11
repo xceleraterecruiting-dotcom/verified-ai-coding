@@ -46,8 +46,12 @@ verified-implementation run = one ship-review.
   The **payment-depth lens** (12 requirements: grant-time amount/currency/captured verification,
   session supersession, reversal-vs-payment race serialization, money-moved-but-state-rejects
   reconciliation, fail-closed payment data, money-state audit) shipped second, re-proven against
-  the CPA and multi-slice fixtures (see proof-10's v0.7 round). Remaining backlog: AI-output
-  depth lens, evidence-sufficiency lens.
+  the CPA and multi-slice fixtures (see proof-10's v0.7 round). The **AI-output depth lens**
+  (15 requirements: per-generation model/prompt-version/run capture, claim provenance,
+  verification-not-instruction no-fabrication, generator goldens + adversarial cases, safe
+  decline, leak-safe surfaces, structured-output validation, L2+ human approval, dry-run-first,
+  minors/likeness checks, end-to-end audit) shipped third, re-proven against both XR fixtures.
+  Remaining backlog: evidence-sufficiency lens.
 
 - **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
   regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.

@@ -125,6 +125,48 @@ exists because grant-time amount/currency verification, session supersession, an
 reversal-vs-webhook race were missing in three consecutive fixture evals (proof-10) and the same
 classes were real blockers in a reviewed payments codebase.
 
+### AI-output depth lens (apply wherever model-generated output reaches people or external systems)
+
+Triggers: generated copy/emails/messages/recommendations/classifications, model-authored
+summaries or decisions, public social/content output, recruiting or athlete claims,
+agent-generated outreach — any model output that can be shown to a user or sent externally.
+
+When triggered, the plan must address each of these — as invariants, acceptance criteria, slice
+proof obligations, assumptions, or open questions (never by silence):
+
+1. **Model id captured** per generation.
+2. **Prompt version captured** per generation (a "model-call id" alone is not prompt-version
+   traceability unless the call record is specified to contain it).
+3. **Run/trace id captured**, linking the generation to its orchestration run.
+4. **Source facts captured** — the exact inputs the generation was given.
+5. **Provenance attached to generated claims** — each factual claim resolvable to its source.
+6. **No-fabrication rule** for stats, offers, quotes, rankings, schools, coaches, and person
+   facts — enforced by verification, not by instruction ("we told the model not to" is not a
+   control).
+7. **Generator-side golden cases** — fixed inputs with expected-output properties, run as a
+   regression harness for the generation step itself (safety canaries alone are not generator
+   goldens).
+8. **Generator-side adversarial cases** — inputs crafted to elicit fabrication, leakage, or
+   off-policy output.
+9. **Safe failure when source facts are insufficient** — the generator declines/skips; it never
+   pads with plausible content.
+10. **No leakage of raw model output, prompts, or stack detail** to users or stored
+    user-visible surfaces.
+11. **Schema/structured-output validation** where output is structured — malformed model
+    responses degrade to a safe state, never pass through.
+12. **Human approval before public publish/send** at L2+ risk.
+13. **Dry-run-first** before real external posting/sending — a render-and-log stage, not just a
+    binary on/off flag.
+14. **Minors/likeness/rights checks** when output references real people, athletes in
+    particular.
+15. **End-to-end audit trail**: output → source facts → prompt version → model run → approval
+    decision.
+
+Label lens-derived defaults as lens-derived. Do not require human approval for purely internal,
+non-user-visible deterministic transformations unless risk justifies it. This lens exists because
+generation-side traceability depth (model id + prompt version) and generator goldens were the
+recurring PARTIALs across both AI-output fixture evals (proof-10).
+
 ## Step 3 — Risk classification (model-authored judgment, cited)
 
 Risk is a semantic judgment. You author it; the lint validates only its shape — a script that

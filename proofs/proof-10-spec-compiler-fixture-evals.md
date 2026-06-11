@@ -241,6 +241,32 @@ Nothing else changed. Reruns: **CPA and multi-slice only.**
   "approval" semantics.
 - Lens-driven defaults are labeled lens-derived where the spec doesn't state them.
 
+## v0.7 AI-output depth lens round — pre-registration (committed BEFORE the reruns)
+
+**Change under test:** the AI-output depth lens (15 requirements) in the compiler skill; rubric's
+AI-output lens expanded to match (prior reviews ran the shorter wording). Reruns: **XR-governance
+and XR-orchestration only**, both under lint 6b and all three lenses.
+
+**Pre-registered expectations:**
+- XR-governance (vs G1–G9): **G6, G7, G8 should move PARTIAL → HIT** (model/prompt-version
+  linkage forced explicitly; a real dry-run render-and-log stage, not a binary flag; generator
+  goldens beyond safety canaries). G1–G5, G9 should hold HIT. The autonomy trap must STILL
+  surface as a blocking high OQ (or equivalent unmissable gate) — the lens must not absorb it.
+- XR-orchestration (vs O1–O6 + two new targets): O1–O6 should hold HIT. New: **AO-a** model id +
+  prompt version + run id explicitly required per draft (round-1 observation (b): was
+  model-call-ID-only, deferred to "existing convention"); **AO-b** generator-side golden/eval
+  obligations exist for the drafting step (round-1 observation (a): none existed).
+- Watch item carry-over: reviewers re-adjudicate ambiguity severity (no lens-default absorbing a
+  founder-grade question below high).
+
+**Overfitting falsifiers (recorded either way):**
+- Lens silent or explicitly not-applicable on non-generation slices (schema, dashboards, run
+  loops, retrieval).
+- No escalation of static UI/routing work merely for containing text.
+- Lens-derived requirements labeled lens-derived.
+- No human-approval ceremony on purely internal deterministic transformations without risk
+  justification.
+
 ## v0.7 payment-depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
 
 First compiles under both the payment-depth lens and lint rule 6b (CPA-r3 needed one lint

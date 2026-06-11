@@ -37,9 +37,17 @@ re-litigate structure.
 When the spec matches a domain below, additionally answer that lens's question with
 YES/PARTIAL/NO + evidence. A NO on an applicable lens caps the verdict at NEEDS_REVISION.
 
-- **AI-output specs** (generated content reaching humans or platforms): did the plan require
-  source-backed claims / no-fabrication controls, human approval before publication, dry-run
-  before live side effects, and model/prompt-version/run traceability for every output?
+- **AI-output depth** (expanded 2026-06-11 from the shorter AI-output wording — reviews before
+  that date ran the shorter version; generated content reaching humans or external systems):
+  did the plan address ALL of — (1) model id, (2) prompt version, and (3) run/trace id captured
+  per generation; (4) source facts captured; (5) claim-level provenance; (6) no-fabrication
+  enforced by verification, not instruction; (7) generator-side golden cases (safety canaries
+  alone don't count); (8) generator-side adversarial cases; (9) safe decline when source facts
+  are insufficient; (10) no raw-output/prompt/stack leakage to user-visible surfaces;
+  (11) structured-output validation with safe degradation; (12) human approval before public
+  publish at L2+; (13) dry-run-first (a render-and-log stage, not a binary flag);
+  (14) minors/likeness/rights checks for outputs referencing real people; (15) an audit trail
+  tying output → source facts → prompt version → model run → approval?
 - **Enterprise-agent specs** (LLM answering over permissioned data): did the plan require
   pre-context ACL filtering (permissions enforced BEFORE content reaches the model), abstention
   on insufficient evidence, leak validation on outputs, grounded citations, and eval metrics
