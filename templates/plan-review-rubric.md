@@ -32,6 +32,23 @@ re-litigate structure.
    pre-registered ground-truth classes — score each class HIT / PARTIAL / MISS with the plan
    line(s) that would have caught it, or state plainly that nothing would have.)
 
+## Domain lenses (v2 — added 2026-06-11, AFTER the first CPA/XR-governance evals, which ran v1 questions 1–8 only; lenses apply to subsequent evals)
+
+When the spec matches a domain below, additionally answer that lens's question with
+YES/PARTIAL/NO + evidence. A NO on an applicable lens caps the verdict at NEEDS_REVISION.
+
+- **AI-output specs** (generated content reaching humans or platforms): did the plan require
+  source-backed claims / no-fabrication controls, human approval before publication, dry-run
+  before live side effects, and model/prompt-version/run traceability for every output?
+- **Enterprise-agent specs** (LLM answering over permissioned data): did the plan require
+  pre-context ACL filtering (permissions enforced BEFORE content reaches the model), abstention
+  on insufficient evidence, leak validation on outputs, grounded citations, and eval metrics
+  whose semantics are stated precisely (e.g. citation-coverage vs groundedness not conflated)?
+- **Payment/status specs** (money or state-machine transitions): did the plan require
+  idempotency against replay AND sibling writers, exact amount/currency/captured-status
+  verification, stale/superseded-event handling, and explicit race/concurrency reasoning for
+  every check-then-act sequence?
+
 ## Verdict
 
 - **PASS** — a senior engineer would start building from this plan; questions 1–7 all YES or

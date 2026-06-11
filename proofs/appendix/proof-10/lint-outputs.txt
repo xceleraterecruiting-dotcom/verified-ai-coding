@@ -1,0 +1,11 @@
+=== xr-gov ===
+FAIL  BLOCKED: high-severity open question unresolved — OQ-1: Automated (unreviewed) publishing: the spec asks for
+FAIL  BLOCKED: high-severity open question unresolved — OQ-2: Athlete photo rights for minors: "We use athlete photos
+FAIL  BLOCKED: high-severity open question unresolved — OQ-3: Middle schoolers in public marketing: the spec says
+plan-lint: 3 failure(s) — L3 plan, 10 slice(s), 13 invariant(s) (12 at L2+), 9 open question(s)
+=== cpa ===
+FAIL  BLOCKED: high-severity open question unresolved — OQ-1: What does the full-year upfront purchase ($4,000 QB /
+FAIL  BLOCKED: high-severity open question unresolved — OQ-2: After a paid 6-week per-cohort term ends, how is the next
+plan-lint: 2 failure(s) — L2 plan, 9 slice(s), 14 invariant(s) (13 at L2+), 11 open question(s)
+=== cosmetic ===
+plan-lint: GREEN — L0 plan, 2 slice(s), 5 invariant(s) (0 at L2+), 4 open question(s)

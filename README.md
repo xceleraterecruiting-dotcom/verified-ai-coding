@@ -36,9 +36,14 @@ verified-implementation run = one ship-review.
 
 - **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
   regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
-- **v0.6 — spec → verified implementation planning**: spec-compiler skill, plan-lint gate,
-  plan-review rubric, six planning fixtures (payments, AI-output governance, orchestration
-  idempotency, auth, multi-slice, cosmetic), proof-10 fixture evals.
+- **v0.6 — spec → verified implementation planning** (status: **PARTIAL DOGFOOD**, see proof-10):
+  spec-compiler skill, plan-lint gate, plan-review rubric, seven planning fixtures across three
+  real systems and three synthetic sanity checks — see [`docs/fixture-domains.md`](docs/fixture-domains.md)
+  (CPA: money/status; XR Marketing: AI-output governance + orchestration idempotency;
+  GroundTruth: enterprise-agent trust boundaries; plus auth, multi-slice, cosmetic). Evals run so
+  far: XR-governance FULL (PASS, 6/9 ground-truth HIT), CPA FULL (NEEDS_REVISION — the plan
+  missed the verified-email class the real review caught, which is the eval working), cosmetic
+  LIGHT (proportionate L0). Four fixture evals pending.
 
 The rule that holds the whole thing together:
 
