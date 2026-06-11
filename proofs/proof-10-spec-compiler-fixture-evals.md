@@ -120,6 +120,23 @@ subsequent evals. Verbatim agent outputs in `appendix/proof-10/`.
    session-lifecycle/verification depth on CPA) are now documented planning-blind-spot candidates
    for the deferred failure-class library.
 
+## Remediation round — pre-registration (committed BEFORE the re-run)
+
+**Change under test:** the identity & account-claim lens added to the spec-compiler skill and the
+rubric (general claimed-vs-verified-control language; no CPA/B4-specific wording — checked by
+grep before commit). Nothing else about the compiler changed.
+
+**Plan:** re-run ONLY the CPA fixture (fresh-context compile with the updated skill → plan-lint →
+cold plan-review on rubric **v2 including all domain lenses, their first exercise** → Q8 scoring
+vs the same C1–C5).
+
+**Pre-registered expectations:** C4 should move MISS → HIT via the lens. C5 should stay HIT.
+C1–C3 may improve via the v2 payment lens being visible to the *reviewer* (not the compiler — the
+payment lens was deliberately NOT added to the compiler skill this round) — no expectation set.
+**Overfitting check (explicit):** the reviewer must judge whether the new lens caused invented
+requirements, inflated risk levels, or ceremony where no binding exists; rubric Q2 is the
+falsifier. Verdict may be PASS or NEEDS_REVISION — recorded either way.
+
 ### Acceptance line (per the amended v0.6 scope)
 
 v0.6 planning layer implemented · CPA full eval complete · XR-governance full eval complete ·

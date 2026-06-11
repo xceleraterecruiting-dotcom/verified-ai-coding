@@ -48,6 +48,12 @@ YES/PARTIAL/NO + evidence. A NO on an applicable lens caps the verdict at NEEDS_
   idempotency against replay AND sibling writers, exact amount/currency/captured-status
   verification, stale/superseded-event handling, and explicit race/concurrency reasoning for
   every check-then-act sequence?
+- **Identity/account-claim bindings** (added 2026-06-11 after the first CPA eval, whose plan
+  missed this class; applies to any user↔resource binding in any domain): did the plan
+  distinguish *claimed* identifiers from *verified control* — stating what proves the principal
+  controls the binding identifier, whether someone can claim another's pending/paid/existing
+  record, whether money/PII bind to a verified principal, and what happens when the identifier is
+  changed or reassigned after binding?
 
 ## Verdict
 

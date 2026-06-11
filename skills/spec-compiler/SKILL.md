@@ -63,6 +63,28 @@ a written reason. Never resolve a high-severity ambiguity by silently picking th
 reading; that was a real failure class (a remediation obligation once contradicted itself and the
 deviation had to be adjudicated after the fact instead of asked about before).
 
+### Identity & account-claim lens (apply wherever a principal gets bound to a resource)
+
+Whenever the spec links a person/account to a resource — account linking, registration or order
+ownership, profile claiming, invite acceptance, payment entitlement, any user↔record binding —
+the plan must answer these, each as an invariant, assumption, or open question (never by
+silence):
+
+1. **What proves the principal controls the identifier used for the binding?** A *provided*
+   identifier (typed email, phone, username) is a claim; a *verified* identifier (provider-attested
+   email, confirmed possession) is evidence. Name which one the binding requires.
+2. **Can a principal claim someone else's pending, paid, or existing record** via a guessable,
+   shared, recycled, or merely-known identifier?
+3. **Do money, PII, or entitlements bind to a verified principal** — or to an unverified
+   identifier that anyone can assert?
+4. **What happens when the identifier changes or is reassigned after binding** (email recycled,
+   phone number reissued, employee offboarded)?
+
+A spec that is silent on these is ambiguous at L2, not permissive — bindings involving minors'
+data, money, or private records default to *verified control required* (assumption) or a
+high-severity open question. This lens exists because the claimed-vs-verified distinction is a
+recurring blind spot at both build time and plan time.
+
 ## Step 3 — Risk classification (model-authored judgment, cited)
 
 Risk is a semantic judgment. You author it; the lint validates only its shape — a script that
