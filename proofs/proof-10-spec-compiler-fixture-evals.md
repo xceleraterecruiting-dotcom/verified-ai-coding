@@ -137,6 +137,36 @@ payment lens was deliberately NOT added to the compiler skill this round) — no
 requirements, inflated risk levels, or ceremony where no binding exists; rubric Q2 is the
 falsifier. Verdict may be PASS or NEEDS_REVISION — recorded either way.
 
+## Remediation round — results (2026-06-11; verbatim transcript + plan in `appendix/proof-10/`)
+
+Fresh-context compile with the lens-updated skill (agent disclosed one extra read beyond the
+fence: `plan-lint.mjs` itself, for the enforced grammar — no answer-key content; accepted and
+recorded). Lint verified locally: structurally clean, BLOCKED on 2 high-severity money OQs
+(post-payment reversal/refunds; full-year scope) — right questions again. Cold plan-review ran
+**rubric v2 with both applicable domain lenses — their first exercise.**
+
+| Measure | v1 plan (first round) | r2 plan (with identity lens) |
+|---|---|---|
+| Verdict | NEEDS_REVISION (identity gap + INV-11 attribution) | **NEEDS_REVISION** — but for different, narrower reasons: 3 payment-path obligations confined to Slice 7/invariants/ACs |
+| Identity lens | n/a (v1 rubric) | **YES** — all four lens elements addressed (INV-4 verified-email binding + named STRONG_RED test, AC 7/8 claim-refusal, A1 verified-principal default, OQ-3 identifier recycling) |
+| Payment lens | n/a | PARTIAL — webhook-time amount/currency/captured verification, session supersession, and the reversal↔webhook sibling-writer race are absent with no recorded rationale |
+| **C4 (the remediation target)** | **MISS** | **HIT** — pre-registered expectation met |
+| C3 reversal closes payment window | PARTIAL | **HIT** (INV-5/INV-10, AC 20, in-flight webhook test) — improvement not pre-registered; noted, not claimed as lens-caused |
+| C5 capacity race | HIT | HIT (expectation met) |
+| C1 session lifecycle / C2 amount verification | PARTIAL / PARTIAL | PARTIAL / PARTIAL — expected: the payment lens was deliberately added only to the *rubric* this round, so the reviewer demands what the compiler doesn't yet plan; closing this is the obvious next surgical lens if the pattern repeats |
+| Q8 line | 1 HIT / 3 PARTIAL / 1 MISS | **3 HIT / 2 PARTIAL / 0 MISS** |
+
+**Overfitting check (pre-registered falsifier): CLEAN.** The reviewer found the lens applied only
+where real bindings exist; the lens-driven default was provenance-labeled in the plan itself
+("lens default, not spec text"); the waiver's typed name was correctly NOT inflated into
+e-signature identity ceremony; risk-map argued *against* escalation to L3. No invented
+requirements.
+
+**Honest residue:** verdict is still NEEDS_REVISION; the un-lensed payment-planning gaps (C1/C2)
+persist exactly where no compiler lens exists. The remediation closed what it pre-registered and
+nothing it didn't — which is the intended behavior of a surgical lens, and the cleanest evidence
+yet that lens-per-blind-spot works without overfitting.
+
 ### Acceptance line (per the amended v0.6 scope)
 
 v0.6 planning layer implemented · CPA full eval complete · XR-governance full eval complete ·
