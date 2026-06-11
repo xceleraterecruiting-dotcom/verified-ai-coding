@@ -218,6 +218,29 @@ the failure-class library's design brief, accumulating evidence before it gets b
 - **AT9** audit/logging expectations for denied access *where applicable* (the spec does not ask for it — an absence with recorded reasoning is acceptable)
 - **AT10** named tests proving cross-tenant access is denied
 
+## v0.7 payment-depth lens round — pre-registration (committed BEFORE the reruns)
+
+**Change under test:** the payment-depth lens (12 requirements) added to the compiler skill, and
+the rubric's payment lens expanded to match (prior reviews ran the shorter wording). Also active
+for the first time in any compile: plan-lint rule 6b (per-slice PO mapping, v0.7 item 4).
+Nothing else changed. Reruns: **CPA and multi-slice only.**
+
+**Pre-registered expectations:**
+- CPA (vs C1–C5): C1 and C2 should move PARTIAL → HIT (webhook-time amount/currency/captured
+  verification; session supersession); the reversal-vs-webhook sibling race (round-2 revision
+  obligation 3) should now be explicitly serialized; C3/C4/C5 should hold HIT.
+- Multi-slice (vs its round-1 gaps): amount/currency/captured verification should appear
+  (round-1 payment-lens MISS item); INV-14-class order-visibility PO should now exist — forced
+  mechanically by lint 6b regardless of lens.
+- Both plans must satisfy lint 6b (per-slice PO references) — first compiles under that rule.
+
+**Overfitting falsifiers (recorded either way):**
+- The lens stays silent or explicitly not-applicable on non-payment slices (multi-slice's board/
+  files/badges/CSV slices must not acquire payment ceremony).
+- No escalation of unrelated identity/auth/content features merely for having "status" or
+  "approval" semantics.
+- Lens-driven defaults are labeled lens-derived where the spec doesn't state them.
+
 ## Multi-slice decomposition eval — pre-registration (committed BEFORE the compile; classes supplied by the user; synthetic fixture, registered for goalpost discipline)
 
 - **MS1** decomposes into independently buildable slices

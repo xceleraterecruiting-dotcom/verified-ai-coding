@@ -44,10 +44,17 @@ YES/PARTIAL/NO + evidence. A NO on an applicable lens caps the verdict at NEEDS_
   pre-context ACL filtering (permissions enforced BEFORE content reaches the model), abstention
   on insufficient evidence, leak validation on outputs, grounded citations, and eval metrics
   whose semantics are stated precisely (e.g. citation-coverage vs groundedness not conflated)?
-- **Payment/status specs** (money or state-machine transitions): did the plan require
-  idempotency against replay AND sibling writers, exact amount/currency/captured-status
-  verification, stale/superseded-event handling, and explicit race/concurrency reasoning for
-  every check-then-act sequence?
+- **Payment-depth** (expanded 2026-06-11 from the shorter payment/status wording — reviews
+  before that date ran the shorter version; money, paid entitlements, or charge-like transfers):
+  did the plan address ALL of — (1) owed amount/currency computed server-side; (2) captured
+  amount/currency/captured-status verified against owed BEFORE granting; (3) a canonical
+  payment↔domain identifier with defined miss behavior; (4) stale/superseded-session rules (no
+  silent loss, no stale-amount honor); (5) event idempotency on a durable id; (6) duplicate
+  distinct payments detected and alerted, not absorbed; (7) defined outcome for payment after
+  cancel/reversal; (8) explicit serialization of the reversal-vs-payment sibling-writer race;
+  (9) a refund/manual-reconciliation signal whenever money moves but state rejects activation;
+  (10) paid entitlement bound to a verified principal; (11) fail-closed on missing/ambiguous
+  payment data; (12) auditability of money-state transitions?
 - **Identity/account-claim bindings** (added 2026-06-11 after the first CPA eval, whose plan
   missed this class; applies to any user↔resource binding in any domain): did the plan
   distinguish *claimed* identifiers from *verified control* — stating what proves the principal

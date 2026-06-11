@@ -85,6 +85,46 @@ data, money, or private records default to *verified control required* (assumpti
 high-severity open question. This lens exists because the claimed-vs-verified distinction is a
 recurring blind spot at both build time and plan time.
 
+### Payment-depth lens (apply wherever money moves or paid entitlement changes state)
+
+Triggers: checkout, payment sessions, invoices, paid subscriptions, refunds,
+cancellations/reversals of paid things, paid entitlement activation, webhook-driven state
+changes, stored payment identifiers, credits/balances/charge-like transfers.
+
+When triggered, the plan must address each of these — as invariants, acceptance criteria, slice
+proof obligations, assumptions, or open questions (never by silence):
+
+1. **Amount/currency owed** — where the owed amount and currency are canonically computed
+   (server-side, never client-supplied).
+2. **Amount/currency captured** — the captured amount, currency, and captured-vs-authorized
+   status are verified against what is owed BEFORE any entitlement is granted. Creation-time
+   pricing is not a substitute for grant-time verification.
+3. **Canonical payment/session identifier** — which identifier binds a payment to its domain
+   object, and what happens when lookup by it misses.
+4. **Stale/superseded sessions** — at most one payable session per obligation, or an explicit
+   supersession rule; a payment landing on a superseded session must not be silently lost OR
+   silently honored at a stale amount.
+5. **Webhook/event idempotency** — replay of the same event is a no-op, keyed on a durable id.
+6. **Duplicate payment detection** — a SECOND distinct payment for an already-satisfied
+   obligation is detected and alerted, not absorbed as a replay.
+7. **Payment after cancel/reversal** — money arriving for a canceled/reversed obligation has a
+   defined outcome (no activation + alert/refund path), not an error loop.
+8. **Cancel/reversal vs payment race** — the reversal writer and the payment writer are sibling
+   writers; state the serialization (conditional update, lock, status predicate) for their
+   interleaving.
+9. **Money-moved-but-state-rejects path** — whenever funds are captured but the domain refuses
+   activation, a refund/manual-reconciliation signal is required; "logged" is not a path.
+10. **Paid entitlement binds to a verified principal** (compose with the identity lens).
+11. **Fail-closed on missing/ambiguous payment data** — absent/null/unparseable
+    intent/session/amount fields refuse activation; they never default to success.
+12. **Audit of money-state transitions** — each transition records who/what/why enough to
+    reconcile later.
+
+Label lens-driven defaults as lens-derived when the spec does not state them directly. This lens
+exists because grant-time amount/currency verification, session supersession, and the
+reversal-vs-webhook race were missing in three consecutive fixture evals (proof-10) and the same
+classes were real blockers in a reviewed payments codebase.
+
 ## Step 3 — Risk classification (model-authored judgment, cited)
 
 Risk is a semantic judgment. You author it; the lint validates only its shape — a script that

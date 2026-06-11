@@ -43,7 +43,11 @@ verified-implementation run = one ship-review.
   fixtures, and the rule retroactively catches both reviewer-caught PO gaps (multi INV-14,
   GroundTruth INV-11). Note: the rule is per-slice — deliberately stricter than the round-1
   reviewers, who accepted one named PO anywhere; archived plans predate it and stay frozen.
-  Remaining backlog: payment-depth lens, AI-output depth lens, evidence-sufficiency lens.
+  The **payment-depth lens** (12 requirements: grant-time amount/currency/captured verification,
+  session supersession, reversal-vs-payment race serialization, money-moved-but-state-rejects
+  reconciliation, fail-closed payment data, money-state audit) shipped second, re-proven against
+  the CPA and multi-slice fixtures (see proof-10's v0.7 round). Remaining backlog: AI-output
+  depth lens, evidence-sufficiency lens.
 
 - **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
   regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
