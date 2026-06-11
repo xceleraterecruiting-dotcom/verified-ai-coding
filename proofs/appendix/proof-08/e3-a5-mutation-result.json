@@ -1,0 +1,61 @@
+{
+  "tool": "verified-ai-coding/regression-check",
+  "createdAt": "2026-06-11T18:27:20.865Z",
+  "argv": [
+    "--repo",
+    "/Users/jorigeck/charleston-passing-academy",
+    "--tests",
+    "tests/landing.test.ts",
+    "--mutations",
+    "examples/regression-check-sample/m-a5-reduced-motion.json",
+    "--out",
+    "/tmp/vac-validate/e3"
+  ],
+  "repo": "/Users/jorigeck/charleston-passing-academy",
+  "head": {
+    "ref": "HEAD",
+    "sha": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+  },
+  "base": null,
+  "mode": "mutations",
+  "tests": [
+    "tests/landing.test.ts"
+  ],
+  "green": {
+    "exitCode": 0,
+    "pass": true,
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-H4ebJG/green/tests/landing.test.ts",
+        "classification": "GREEN"
+      }
+    ]
+  },
+  "red": {
+    "exitCode": 1,
+    "applied": [
+      {
+        "file": "src/app/globals.css",
+        "why": "Reintroduces the landing-page blocker: the reduced-motion reset only shortens animation-duration, leaving the infinite ticker cycling every frame (strobe).",
+        "find": "\n    animation-iteration-count: 1 !important;",
+        "replace": "",
+        "sha256Before": "b6312f94171b2debcafc4e2edd3bc1fa514e905ae6ffdab6744d6be018fcf9b6",
+        "sha256After": "9e686cab61f8fef0c563935b48dcc24c98deff93331a7111c251c6240ea51629"
+      }
+    ],
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-H4ebJG/red/tests/landing.test.ts",
+        "classification": "STRONG_RED",
+        "failedAssertions": [
+          {
+            "fullName": "reduced motion disables animation (A5) the reduced-motion reset stops infinite animations, not just shortens them",
+            "message": "AssertionError: expected '@media (prefers-reduced-motion: reduc…' to match /animation-iteration-count: 1 !importa…/     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-H4ebJG/red/tests/landing.test.ts:115:32     at file:///Users/jorigeck/charleston-passing-academy/nod"
+          }
+        ]
+      }
+    ],
+    "verdict": "STRONG_RED"
+  },
+  "verdict": "STRONG_RED — 1 assertion(s) discriminate the fix, GREEN on fixed HEAD"
+}

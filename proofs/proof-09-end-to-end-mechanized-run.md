@@ -1,13 +1,27 @@
 # Proof 09 — First end-to-end run of the mechanized harness on a fresh change
 
+> **Executive summary.** The updated ship-review flow ran end-to-end on a fresh risk-Level-2
+> change (a traced harm path that could allow duplicate selection/payment of one child via
+> duplicate registration rows) — not the historical fixture the tools were validated on. Outcome:
+> an attributed STRONG_RED with 4/4 pre-declared discriminators (0 missing, 0 unexpected), a
+> hashed bundle whose manifest the cold reviewer independently spot-checked, and a merge-grade
+> PASS whose scorecard's `Runtime verification: NONE` explicitly blocked production-ready
+> language. The new rules bit three times: missing build-gate evidence caught, an unhashed
+> mutation spec caught, and verdict language constrained by the runtime field. Authored by the
+> builder; the independently checkable artifacts are
+> `appendix/proof-09/portal-F1-regression-result.json`, the fixture repo's
+> `verification/dedup-followup/` (scorecard, manifest, mutation spec), and
+> `verification/transcripts/dedup-cold-review.md` (verbatim reviewer output).
+
 **Claim under test:** the updated `ship-review` flow (mechanical bundles, attributed mutation
 specs, risk-leveled regression proof, Runtime-verification field) works on a **fresh, unknown
 Level 2 change** — not just the historical portal fixture it was validated against in proof-08 —
 and the new rules actually bite in practice rather than decorating the scorecard.
 
 **Subject:** portal follow-up F1 in the Charleston Passing Academy repo — duplicate athlete rows
-on registration resubmit (distinct ids defeat `@@unique(athleteId, cohortId)`, so one child can be
-selected and paid twice; dupes also consume evaluation capacity). Recorded as a follow-up by the
+on registration resubmit (distinct ids defeat `@@unique(athleteId, cohortId)`: a traced harm path
+that could allow one child to be selected and paid for twice; dupes also consume evaluation
+capacity. Traced, never demonstrated — this code has not run in production). Recorded as a follow-up by the
 proof-08-era money-path review; never previously fixed or reviewed. Risk Level 2.
 
 ## The run (commits `057330c` fix, `3915edd` artifacts, in the CPA repo)

@@ -2,9 +2,14 @@
 
 **Stop vibe-coding. Make AI prove the feature.**
 
-A Claude Code skill pack for AI-assisted builders who want to ship safer code. It wraps implementation in the things vibe-coding skips: project context, explicit invariants, tests and evals, redteam cases, a model-agnostic cold review, bounded remediation, and a ship/no-ship scorecard.
+An **evidence-backed review harness for AI-assisted code changes.** It converts business-invariant claims into: contracts, hashed evidence bundles, attributed mutation specs, discriminating regression checks, cold review, risk-tiered ship/no-ship scorecards, and explicit runtime-verification limits.
 
-This is markdown-first, no-backend `v0.1`. There is no app, CLI, API, or dashboard. It is a workflow you run inside Claude Code.
+It is a workflow you run inside Claude Code, plus two dependency-free verification tools (`scripts/make-bundle.mjs`, `scripts/regression-check.mjs`).
+
+**Start here:**
+- [`docs/case-study-charleston-passing-academy.md`](docs/case-study-charleston-passing-academy.md) — one real payments app, from "all tests green" to 9 confirmed invariant violations to mechanically provable fixes
+- [`proofs/proof-09-end-to-end-mechanized-run.md`](proofs/proof-09-end-to-end-mechanized-run.md) — the harness dogfooded end-to-end on a fresh Level 2 change
+- [`proofs/proof-08-mechanized-regression-evidence.md`](proofs/proof-08-mechanized-regression-evidence.md) — pre-registered tool validation, including the falsified assumption now encoded in the tool
 
 ---
 
@@ -34,6 +39,44 @@ The rule that holds the whole thing together:
 - **Invariants are enforced below the UI.** If the only thing stopping a bad action is a disabled button, it isn't stopped.
 - **Failed reviews create proof obligations.** A blocker isn't "fix this vibe" — it's a named problem with a required proof, a minimal allowed fix, and a list of forbidden changes.
 - **Bounded remediation stays bounded.** Fix only the listed blockers. One regression test per blocker. Smallest patch possible. No broad rewrites. If you discover a bigger issue, report it as a follow-up — don't silently fix it.
+
+## How to inspect this repo
+
+Don't trust the narrative — the proofs are designed to be checked. In rough order of effort:
+
+```bash
+# 1. Unit tests for the verification tools (no network, no fixture needed)
+node scripts/make-bundle.test.mjs
+node scripts/regression-check.test.mjs
+
+# 2. Read a committed regression result and check its claims against its own JSON:
+#    provenance (findingId), declared expectedTests, per-assertion failures, file hashes
+cat proofs/appendix/proof-09/portal-F1-regression-result.json
+
+# 3. The negative path: a spec declaring a wrong discriminator gets demoted, not counted
+cat proofs/appendix/proof-08/e1d-expectation-mismatch-negative-path.json
+
+# 4. With the fixture repo present (a real app with FAIL→PASS history), re-run a proof live:
+node scripts/regression-check.mjs --repo <fixture> \
+  --tests tests/portal-blockers.test.ts \
+  --mutations examples/regression-check-sample/m-b2-amount-guard.json
+# Expected: STRONG_RED, exactly the 2 declared discriminators, GREEN on HEAD
+
+# 5. Verify any bundle manifest hash yourself
+shasum -a 256 <bundle>/diff.patch   # compare against <bundle>/manifest.json
+```
+
+The case study separates builder-authored interpretation from these rerunnable artifacts — the
+documents tell you which is which. Verbatim cold-review transcripts live in the fixture repo
+under `verification/transcripts/`.
+
+## What this is not
+
+- **Not formal verification.** No proofs about all executions — evidence about specific invariants, specific mutations, specific tests.
+- **Not runtime validation**, unless a scorecard's `Runtime verification` field says so. `NONE` means the code was never executed against real infrastructure, and the scorecard must say "merge-grade," never "production-ready."
+- **Not independent or cross-vendor review yet.** Every verdict recorded here is same-vendor (Claude reviewing Claude), fresh-context, with tool isolation *attested* rather than enforced. The reviewer-context metadata records this honestly per review.
+- **Not bug prevention.** The session that built this introduced bugs in every artifact class — page, fixes, tests, evidence bundles. The harness detected them; it did not prevent them.
+- **Not proof that AI code is correct.** The defensible claim: it catches classes of business-invariant failures that normal green gates miss, and it forces every PASS to state its evidence boundary.
 
 ## Quick start
 

@@ -7,6 +7,25 @@
 > This is **evidence-backed AI code review for business invariants**. It is not formal
 > verification, and it does not claim to be.
 
+## Read this first — who wrote this, and what you can check without trusting them
+
+**This case study was written by the builder** — the same agent that wrote the code, the fixes,
+and the harness. By this artifact's own reviewer-context standard, the narrative below is
+weak-grade evidence about itself. That is deliberate to name: the artifact's thesis is not
+"trust this case study." The thesis is "do not trust builder narrative without evidence" — so
+this document separates builder-authored interpretation (the prose) from rerunnable proof
+artifacts (the things you can check):
+
+- committed regression-check result JSONs (`proofs/appendix/`), each carrying provenance,
+  declared discriminators, per-assertion failures, and pre/post mutation hashes
+- hashed bundle manifests, verifiable with `shasum -a 256`
+- verbatim cold-review transcripts in the subject repo (`verification/transcripts/`)
+- the mutation specs and 19 finding-tied regression tests in the subject repo, re-runnable via
+  `scripts/regression-check.mjs` ("How to inspect this repo" in the README)
+
+Where a claim below rests only on the builder's account (e.g. what a reviewer said mid-session),
+the transcript is committed; where no artifact exists, treat the claim as narrative.
+
 ## The subject
 
 Charleston Passing Academy: a Next.js/Prisma/Clerk/Stripe app — public site, evaluation
@@ -60,9 +79,11 @@ discriminator that doesn't fail demotes the result to `EXPECTATION_MISMATCH` (no
 kills fabricated STRONG_REDs. Requirements are risk-tiered (Level 2 = money/auth/permissions/user
 data/status transitions: hashed manifest + one attributed STRONG_RED per remediated blocker +
 explicit runtime-verification field; `NONE` blocks "production-ready" language). The first
-end-to-end run on a fresh Level 2 change (proof-09: the duplicate-athlete fix) produced an
-adjudicated 4/4-declared STRONG_RED, a reviewer that independently verified manifest hashes —
-and two evidence defects caught by the machinery itself before the scorecard was written.
+end-to-end run on a fresh Level 2 change (proof-09: the duplicate-athlete fix — a traced harm
+path that could allow duplicate selection/payment, not a demonstrated exploit; the code has never
+run in production) produced an adjudicated 4/4-declared STRONG_RED, a reviewer that independently
+verified manifest hashes — and two evidence defects caught by the machinery itself before the
+scorecard was written.
 
 ## The numbers
 

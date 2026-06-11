@@ -1,0 +1,61 @@
+{
+  "tool": "verified-ai-coding/regression-check",
+  "createdAt": "2026-06-11T18:27:07.807Z",
+  "argv": [
+    "--repo",
+    "/Users/jorigeck/charleston-passing-academy",
+    "--tests",
+    "tests/portal-blockers.test.ts",
+    "--mutations",
+    "examples/regression-check-sample/m-b5-lock-order.json",
+    "--out",
+    "/tmp/vac-validate/e2"
+  ],
+  "repo": "/Users/jorigeck/charleston-passing-academy",
+  "head": {
+    "ref": "HEAD",
+    "sha": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+  },
+  "base": null,
+  "mode": "mutations",
+  "tests": [
+    "tests/portal-blockers.test.ts"
+  ],
+  "green": {
+    "exitCode": 0,
+    "pass": true,
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-OGWKc1/green/tests/portal-blockers.test.ts",
+        "classification": "GREEN"
+      }
+    ]
+  },
+  "red": {
+    "exitCode": 1,
+    "applied": [
+      {
+        "file": "src/server/services/registration.ts",
+        "why": "Reintroduces portal blocker B5's bug shape under current interfaces: the capacity count is read BEFORE the event lock, so a rival submission landing while waiting on the lock is not seen.",
+        "find": "await tx.lockEvent(event.id);\n\n    const existingCount = await tx.registrations.countForEvent(event.id);",
+        "replace": "const existingCount = await tx.registrations.countForEvent(event.id);\n\n    await tx.lockEvent(event.id);",
+        "sha256Before": "8ed891abe9d898f36dce8d0fd972907fc1b57e78a5f90ab66c2c5cb975a985dd",
+        "sha256After": "5cff4a1b288b6b9edd3ac7f9971a1b86b3b8d5ab10a04594bcba378163040121"
+      }
+    ],
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-OGWKc1/red/tests/portal-blockers.test.ts",
+        "classification": "STRONG_RED",
+        "failedAssertions": [
+          {
+            "fullName": "B5 — the capacity check happens inside the event lock rejects a submission when a rival filled the last slot between findOpen and the lock",
+            "message": "Error: promise resolved \"{ parentId: 'par_60', …(2) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy/nod"
+          }
+        ]
+      }
+    ],
+    "verdict": "STRONG_RED"
+  },
+  "verdict": "STRONG_RED — 1 assertion(s) discriminate the fix, GREEN on fixed HEAD"
+}

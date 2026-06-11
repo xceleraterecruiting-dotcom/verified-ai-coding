@@ -1,0 +1,98 @@
+{
+  "tool": "verified-ai-coding/regression-check",
+  "createdAt": "2026-06-11T18:27:23.233Z",
+  "argv": [
+    "--repo",
+    "/Users/jorigeck/charleston-passing-academy",
+    "--tests",
+    "tests/portal-blockers.test.ts",
+    "--support-files",
+    "tests/fakes.ts",
+    "--base",
+    "a867337",
+    "--out",
+    "/tmp/vac-validate/e4"
+  ],
+  "repo": "/Users/jorigeck/charleston-passing-academy",
+  "head": {
+    "ref": "HEAD",
+    "sha": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+  },
+  "base": {
+    "ref": "a867337",
+    "sha": "a8673372ff96fa0054d7d3795cc5dcd7bf3f1eec"
+  },
+  "mode": "base",
+  "tests": [
+    "tests/portal-blockers.test.ts"
+  ],
+  "green": {
+    "exitCode": 0,
+    "pass": true,
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/green/tests/portal-blockers.test.ts",
+        "classification": "GREEN"
+      }
+    ]
+  },
+  "red": {
+    "exitCode": 1,
+    "applied": [
+      {
+        "file": "tests/portal-blockers.test.ts",
+        "copiedFrom": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+      },
+      {
+        "file": "tests/fakes.ts",
+        "copiedFrom": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+      }
+    ],
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/red/tests/portal-blockers.test.ts",
+        "classification": "STRONG_RED",
+        "failedAssertions": [
+          {
+            "fullName": "B1 — a payment on an overwritten checkout session is never silently dropped activates via the session's enrollment metadata when the stored id was overwritten",
+            "message": "NotFoundError: No enrollment for checkout session cs_A.     at Module.activateEnrollmentFromCheckout (/private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/red/src/server/services/payments.ts:75:26)     at processTicksAndRejections (node:internal/process/task_queues:104"
+          },
+          {
+            "fullName": "B2 — activation requires a captured payment matching what is owed refuses an amount that does not match amountDueCents",
+            "message": "Error: promise resolved \"{ enrollmentId: 'enr_15', …(1) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy"
+          },
+          {
+            "fullName": "B2 — activation requires a captured payment matching what is owed refuses a non-usd currency",
+            "message": "Error: promise resolved \"{ enrollmentId: 'enr_20', …(1) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy"
+          },
+          {
+            "fullName": "B2 — activation requires a captured payment matching what is owed does not activate when the payment is not captured yet",
+            "message": "AssertionError: expected undefined to be false // Object.is equality     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/red/tests/portal-blockers.test.ts:166:30     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "fullName": "B3 — reversing a selection closes the payment window cancels the unpaid enrollment so checkout refuses and the webhook demands a refund",
+            "message": "AssertionError: expected 'AWAITING_PAYMENT' to be 'CANCELED' // Object.is equality     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/red/tests/portal-blockers.test.ts:197:50     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "fullName": "B3 — reversing a selection closes the payment window allows re-selecting the athlete afterwards by re-opening the canceled enrollment",
+            "message": "ConflictError: Athlete already has an enrollment for this cohort.     at Module.decideAthlete (/private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-vE2vkC/red/src/server/services/selection.ts:60:23)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "fullName": "B3 — reversing a selection closes the payment window refuses to reverse a selection whose enrollment is already paid",
+            "message": "Error: promise resolved \"{ registrationId: 'reg_43', …(2) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-acade"
+          },
+          {
+            "fullName": "round 2 — duplicate detection fails closed; markPaid is conditional treats a one-sided null payment intent as a duplicate, not a replay",
+            "message": "Error: promise resolved \"{ enrollmentId: 'enr_50', …(1) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy"
+          },
+          {
+            "fullName": "B5 — the capacity check happens inside the event lock rejects a submission when a rival filled the last slot between findOpen and the lock",
+            "message": "AssertionError: expected error to be instance of ConflictError     at file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1849:31     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      }
+    ],
+    "verdict": "STRONG_RED"
+  },
+  "verdict": "STRONG_RED — 9 assertion(s) discriminate the fix, GREEN on fixed HEAD"
+}

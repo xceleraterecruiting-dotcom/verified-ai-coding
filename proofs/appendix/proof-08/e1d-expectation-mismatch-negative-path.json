@@ -1,0 +1,85 @@
+{
+  "tool": "verified-ai-coding/regression-check",
+  "createdAt": "2026-06-11T18:44:51.876Z",
+  "argv": [
+    "--repo",
+    "/Users/jorigeck/charleston-passing-academy",
+    "--tests",
+    "tests/portal-blockers.test.ts",
+    "--mutations",
+    "/tmp/vac-validate/bogus-spec.json",
+    "--out",
+    "/tmp/vac-validate/e1d"
+  ],
+  "repo": "/Users/jorigeck/charleston-passing-academy",
+  "head": {
+    "ref": "HEAD",
+    "sha": "652a1e273ea5a2241b62343c58a976a8bd2c580f"
+  },
+  "base": null,
+  "mode": "mutations",
+  "tests": [
+    "tests/portal-blockers.test.ts"
+  ],
+  "green": {
+    "exitCode": 0,
+    "pass": true,
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-2PVQ00/green/tests/portal-blockers.test.ts",
+        "classification": "GREEN"
+      }
+    ]
+  },
+  "red": {
+    "exitCode": 1,
+    "applied": [
+      {
+        "file": "src/server/services/payments.ts",
+        "why": "Reintroduces portal blocker B2 under current interfaces: the webhook activates without verifying the captured amount/currency against amountDueCents.",
+        "find": "if (args.amountTotalCents !== enrollment.amountDueCents || (args.currency ?? \"\").toLowerCase() !== \"usd\") {",
+        "replace": "if (false) {",
+        "sha256Before": "92fe31f46b2c94143d51bcc6f4702fac097fcc566185efba70fdd4837cac6337",
+        "sha256After": "71ac6afdc2375e5779ac166134bc39437eb8161ba9a4bc08eef040de5eb53a60"
+      }
+    ],
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-2PVQ00/red/tests/portal-blockers.test.ts",
+        "classification": "STRONG_RED",
+        "failedAssertions": [
+          {
+            "fullName": "B2 — activation requires a captured payment matching what is owed refuses an amount that does not match amountDueCents",
+            "message": "Error: promise resolved \"{ enrollmentId: 'enr_15', …(2) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy"
+          },
+          {
+            "fullName": "B2 — activation requires a captured payment matching what is owed refuses a non-usd currency",
+            "message": "Error: promise resolved \"{ enrollmentId: 'enr_20', …(2) }\" instead of rejecting     at Assertion.__VITEST_REJECTS__ (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1805:21)     at Assertion.propertyGetter (file:///Users/jorigeck/charleston-passing-academy"
+          }
+        ]
+      }
+    ],
+    "verdict": "STRONG_RED",
+    "provenance": {
+      "findingId": "portal-B2",
+      "invariant": "An enrollment activates only on a captured payment whose amount and currency match amountDueCents (usd).",
+      "expectedTests": [
+        "a discriminator that does not exist"
+      ]
+    },
+    "expectation": {
+      "failing": [
+        "B2 — activation requires a captured payment matching what is owed refuses an amount that does not match amountDueCents",
+        "B2 — activation requires a captured payment matching what is owed refuses a non-usd currency"
+      ],
+      "missing": [
+        "a discriminator that does not exist"
+      ],
+      "unexpected": [
+        "B2 — activation requires a captured payment matching what is owed refuses an amount that does not match amountDueCents",
+        "B2 — activation requires a captured payment matching what is owed refuses a non-usd currency"
+      ]
+    }
+  },
+  "verdict": "EXPECTATION_MISMATCH — declared discriminator(s) did not fail under the mutation: a discriminator that does not exist [was: STRONG_RED — 2 assertion(s) discriminate the fix, GREEN on fixed HEAD]"
+}

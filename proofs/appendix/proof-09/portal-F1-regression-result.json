@@ -1,0 +1,93 @@
+{
+  "tool": "verified-ai-coding/regression-check",
+  "createdAt": "2026-06-11T18:55:40.503Z",
+  "argv": [
+    "--repo",
+    ".",
+    "--tests",
+    "tests/registration-dedup.test.ts",
+    "--mutations",
+    "verification/dedup-followup/mutation-portal-F1.json",
+    "--out",
+    "/tmp/dedup-proof/regression"
+  ],
+  "repo": "/Users/jorigeck/charleston-passing-academy",
+  "head": {
+    "ref": "HEAD",
+    "sha": "057330c48a39f2c53ef2f773aa89d7397a467d6c"
+  },
+  "base": null,
+  "mode": "mutations",
+  "tests": [
+    "tests/registration-dedup.test.ts"
+  ],
+  "green": {
+    "exitCode": 0,
+    "pass": true,
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-gzgfWi/green/tests/registration-dedup.test.ts",
+        "classification": "GREEN"
+      }
+    ]
+  },
+  "red": {
+    "exitCode": 1,
+    "applied": [
+      {
+        "file": "src/server/services/registration.ts",
+        "why": "Removes exactly the cross-submission identity lookup — the claimed fix — while preserving every interface: resubmits are treated as brand-new athletes again, reintroducing portal-F1.",
+        "find": "const athlete = await tx.athletes.findByParentAndIdentity(parent.id, a);",
+        "replace": "const athlete = null;",
+        "sha256Before": "c893dfe21b1c1fc8bcd1cab439556e9d3a4fec7b52af13d3698f636a05fc92be",
+        "sha256After": "8caa602bcb32226fd4008b11beac9f4a957e1d08161758f3d59a39a7b216d781"
+      }
+    ],
+    "files": [
+      {
+        "file": "../../../../../../../private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-gzgfWi/red/tests/registration-dedup.test.ts",
+        "classification": "STRONG_RED",
+        "failedAssertions": [
+          {
+            "fullName": "registration resubmit dedup (portal-F1) resubmitting the same family is idempotent: no new athletes, registrations, or capacity",
+            "message": "AssertionError: expected [ 'reg_6' ] to deeply equal [ 'reg_4' ]     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-gzgfWi/red/tests/registration-dedup.test.ts:65:36     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "fullName": "registration resubmit dedup (portal-F1) an identical resubmit succeeds even when the event is at capacity",
+            "message": "ConflictError: The evaluation is at capacity. Join the waitlist by emailing the academy.     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-gzgfWi/red/src/server/services/registration.ts:76:13     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "fullName": "registration resubmit dedup (portal-F1) matches the identity case-insensitively on names",
+            "message": "AssertionError: expected [ { id: 'ath_13', …(9) }, …(1) ] to have a length of 1 but got 2     at Proxy.<anonymous> (file:///Users/jorigeck/charleston-passing-academy/node_modules/@vitest/expect/dist/index.js:1339:22)     at Proxy.<anonymous> (file:///Users/jorigeck/charleston-passing-academy/node_mo"
+          },
+          {
+            "fullName": "registration resubmit dedup (portal-F1) counts only genuinely new athletes against capacity on a partial resubmit",
+            "message": "ConflictError: The evaluation is at capacity. Join the waitlist by emailing the academy.     at /private/var/folders/vp/3g4h4xpn6c1207f_r31zqxt40000gn/T/regression-check-wt-gzgfWi/red/src/server/services/registration.ts:76:13     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      }
+    ],
+    "verdict": "STRONG_RED",
+    "provenance": {
+      "findingId": "portal-F1",
+      "invariant": "A resubmitted athlete (same parent, name, DOB) reuses the existing rows: no duplicate athlete row, no duplicate registration, no capacity consumed.",
+      "expectedTests": [
+        "resubmitting the same family is idempotent",
+        "identical resubmit succeeds even when the event is at capacity",
+        "matches the identity case-insensitively",
+        "counts only genuinely new athletes against capacity"
+      ]
+    },
+    "expectation": {
+      "failing": [
+        "registration resubmit dedup (portal-F1) resubmitting the same family is idempotent: no new athletes, registrations, or capacity",
+        "registration resubmit dedup (portal-F1) an identical resubmit succeeds even when the event is at capacity",
+        "registration resubmit dedup (portal-F1) matches the identity case-insensitively on names",
+        "registration resubmit dedup (portal-F1) counts only genuinely new athletes against capacity on a partial resubmit"
+      ],
+      "missing": [],
+      "unexpected": []
+    }
+  },
+  "verdict": "STRONG_RED — 4 assertion(s) discriminate the fix, GREEN on fixed HEAD"
+}
