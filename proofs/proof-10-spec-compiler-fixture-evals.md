@@ -218,6 +218,32 @@ the failure-class library's design brief, accumulating evidence before it gets b
 - **AT9** audit/logging expectations for denied access *where applicable* (the spec does not ask for it — an absence with recorded reasoning is acceptable)
 - **AT10** named tests proving cross-tenant access is denied
 
+## Auth-tenancy eval — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
+
+Same protocol (fence held, grammar-read disclosed; lint verified locally).
+
+- **Lint:** structurally clean first pass; BLOCKED on 2 high-severity OQs — evaluation-results
+  scope ("own players" vs whole school: the spec's sharpest ambiguity over the most sensitive
+  class) and the unknown existing auth stack (correctly noted that stateless JWTs would forbid
+  the naive claims-based design). L2, no downgrade, with a regulatory-regime escalation question
+  recorded.
+- **Plan-review verdict: PASS** — Q1–Q7 all YES; identity lens YES (its third domain: invite-token
+  possession is the proof of control, "the binding requires the token, never the bare email";
+  email-reassignment surfaced as OQ); payment/status lens applied to the invite/membership state
+  machines and YES (double-redemption concurrency, revoke-vs-inflight race defeated by
+  live-state-per-request, mid-move fault injection).
+- **Q8: 8 HIT / 2 PARTIAL / 0 MISS.** The fixture's deliberate ambiguity (multi-school coach)
+  was handled fail-closed per-record (AT7 HIT). Single authorization chokepoint with a
+  route-coverage proof and explicit no-second-implementation reuse note (AT2 HIT). IDOR red-team
+  enumeration named per endpoint (AT4 HIT).
+- **The two PARTIALs:** AT5 (authn-vs-unauthn behavior on data endpoints never gets its own named
+  test) — category **(4) acceptable limitation** (no codebase access; behavioral split implied by
+  the chokepoint). AT9 (denied-access logging absent without recorded reasoning) — category
+  **(2) rubric-only gap, the first of the series**: the class exceeds what the spec asked;
+  the plan audited only where it surfaced its own constraint (impersonation). Honest reading:
+  AT9 measures the *class list*, not the compiler — synthetic classes can out-demand their own
+  fixture.
+
 ## XR-orchestration eval round — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
 
 Same protocol (fence held, grammar-read disclosed; lint verified locally).
@@ -253,7 +279,8 @@ the graduated candidate. Not added this round, per scope.
 
 v0.6 planning layer implemented · CPA full eval complete (+ identity-lens remediation round) ·
 XR-governance full eval complete · GroundTruth full eval complete (PASS, 9/1/0) ·
-**XR-orchestration full eval complete (PASS, 6/6 HIT)** · cosmetic light eval complete · auth
-fixture pending · multi-slice fixture pending · **overall: PARTIAL DOGFOOD** (all four
-real-system fixtures fully evaluated; the two synthetic sanity checks — auth tenancy,
-multi-slice decomposition — outstanding).
+XR-orchestration full eval complete (PASS, 6/6 HIT) · **auth-tenancy full eval complete (PASS,
+8/2/0)** · cosmetic light eval complete · multi-slice fixture pending · **overall: PARTIAL
+DOGFOOD** (one synthetic sanity check — multi-slice decomposition — outstanding before the
+explicit release decision; current leaning per the operator: v0.6-rc1 with documented
+compiler-prompt gaps rather than full release, given CPA's NEEDS_REVISION payment-depth residue).
