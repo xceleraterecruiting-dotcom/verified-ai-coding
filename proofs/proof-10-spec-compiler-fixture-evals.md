@@ -218,6 +218,19 @@ the failure-class library's design brief, accumulating evidence before it gets b
 - **AT9** audit/logging expectations for denied access *where applicable* (the spec does not ask for it — an absence with recorded reasoning is acceptable)
 - **AT10** named tests proving cross-tenant access is denied
 
+## Multi-slice decomposition eval — pre-registration (committed BEFORE the compile; classes supplied by the user; synthetic fixture, registered for goalpost discipline)
+
+- **MS1** decomposes into independently buildable slices
+- **MS2** no mega-slices or unrelated-concern mixing (the fixture deliberately tangles board/files/RSVP+SMS/store/badges/CSV)
+- **MS3** dependency order preserved (explicit, acyclic)
+- **MS4** schema/data-model work separated from UI/API/workflow work
+- **MS5** high-risk ambiguity surfaced before implementation (the fixture embeds: card payments, under-13 posting, badges on a PUBLIC recruiting profile, cohort scoping)
+- **MS6** L2+ invariants mapped to slices + acceptance criteria + proof obligations
+- **MS7** slice outputs feed verified-implementation one slice at a time
+- **MS8** unresolved high-severity questions are implementation-blocking
+- **MS9** non-goals explicit
+- **MS10** no invented requirements
+
 ## Auth-tenancy eval — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
 
 Same protocol (fence held, grammar-read disclosed; lint verified locally).
