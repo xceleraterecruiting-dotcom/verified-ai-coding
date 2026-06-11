@@ -348,6 +348,10 @@ v0.6 planning layer implemented · CPA full eval complete (+ identity-lens remed
 XR-governance full eval complete · GroundTruth full eval complete (PASS, 9/1/0) ·
 XR-orchestration full eval complete (PASS, 6/6 HIT) · auth-tenancy full eval complete (PASS,
 8/2/0) · **multi-slice full eval complete (NEEDS_REVISION, 9/1/0)** · cosmetic light eval
-complete · **fixture suite COMPLETE — aggregate 41 HIT / 9 PARTIAL / 0 MISS post-remediation ·
-release recommendation: v0.6-rc1 with documented gaps (see Release-decision summary; operator to
-ratify).**
+complete · **fixture suite COMPLETE — aggregate 41 HIT / 9 PARTIAL / 0 MISS post-remediation
+(PASS ×4: XR-governance, GroundTruth, XR-orchestration, auth-tenancy · NEEDS_REVISION ×2: CPA r2,
+multi-slice · proportionate-L0 ×1: cosmetic, light eval) · release decision RATIFIED: tagged
+`v0.6-rc1`, NOT full v0.6 — documented gaps = the v0.7 backlog: (1) payment-depth lens, re-prove
+on CPA + multi-slice; (2) AI-output depth lens, re-prove on one XR fixture; (3)
+evidence-sufficiency lens, re-prove on GroundTruth; (4) plan-lint PO-mapping rule (every touched
+L2+ invariant must appear in that slice's proof obligations) + unit tests.**
