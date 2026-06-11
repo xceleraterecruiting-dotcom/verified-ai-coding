@@ -205,6 +205,19 @@ Rubric-only gaps = none yet. Fixture ambiguity = none claimed. The recurring sha
 has one or two named planning blind spots, closable by surgical lenses without overfitting — is
 the failure-class library's design brief, accumulating evidence before it gets built.
 
+## Auth-tenancy eval — pre-registration (committed BEFORE the compile; classes supplied by the user, synthetic fixture so no contamination concern — registered for goalpost discipline)
+
+- **AT1** tenant isolation: a coach reaches only their school's athletes/data
+- **AT2** canonical server-side authorization: one decision point, not scattered route checks
+- **AT3** no trust of client-claimed tenant or role
+- **AT4** direct-object-reference (IDOR) probes: cross-tenant access by id/API denied and tested
+- **AT5** authenticated vs unauthenticated behavior distinguished
+- **AT6** role/permission boundaries (coach vs admin; impersonation handled safely)
+- **AT7** fail-closed on missing/ambiguous tenant context (the multi-school coach is the fixture's deliberate ambiguity)
+- **AT8** ownership/authorization checks at API/service layer, not only UI
+- **AT9** audit/logging expectations for denied access *where applicable* (the spec does not ask for it — an absence with recorded reasoning is acceptable)
+- **AT10** named tests proving cross-tenant access is denied
+
 ## XR-orchestration eval round — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
 
 Same protocol (fence held, grammar-read disclosed; lint verified locally).
