@@ -167,9 +167,48 @@ persist exactly where no compiler lens exists. The remediation closed what it pr
 nothing it didn't — which is the intended behavior of a surgical lens, and the cleanest evidence
 yet that lens-per-blind-spot works without overfitting.
 
+## GroundTruth eval round — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
+
+Same protocol: fresh-context compile (fence held; one permitted grammar-read of plan-lint.mjs
+disclosed) → lint (verified locally) → cold plan-review on rubric v2 → GT1–GT10 scoring.
+
+- **Lint:** structurally clean first pass; BLOCKED on 3 high-severity OQs — per-source ACL field
+  semantics, identity source of truth, revocation staleness. The compiler **self-escalated
+  L2→L3**, with quoted justification the reviewer judged honest (MNPI existence-suppression,
+  heterogeneous ACL metadata, dashboard-as-compliance-artifact).
+- **Plan-review verdict: PASS** (Q7 PARTIAL with recorded rationale — INV-11 lacks a named
+  STRONG_RED artifact; non-blocking revision recommendation). Enterprise-agent lens: YES on all
+  five elements. Identity lens: judged applicable to principal↔entitlement binding and YES —
+  evidence the lens generalizes beyond account-claiming (forged client-supplied role claims
+  refused; "verified control required" invoked in OQ-2).
+- **Q8: 9 HIT / 1 PARTIAL / 0 MISS.** Both classes derived from the real audit's actual findings
+  were caught: **GT7 HIT** (OQ-1 names the exact ambiguous field and blocks on it) and **GT6 HIT**
+  (INV-9 pins numerators/denominators; "a decline can never increment the grounded numerator";
+  groundedness defined as supported-by, not citation-presence).
+- **The PARTIAL: GT10** — launch gates don't represent an "insufficient evidence" state (sample
+  size / coverage floor) distinct from good numbers. **Category: (1) compiler prompt gap** —
+  the named candidate for the next surgical lens *if the pattern repeats on another fixture*
+  ("evidence-sufficiency lens": any plan whose launch/ship decision consumes metrics must state
+  the conditions under which the metrics themselves are insufficient evidence). Not added this
+  round, per scope.
+- **Unscored observation (not pre-registered, recorded only):** citation-id hallucination in
+  structured output is covered (out-of-set citations rejected pre-send); general
+  malformed-model-response fallback (degrade to decline, never pass through) is not — a
+  hardening note for any real implementation.
+
+## Cross-fixture pattern (three full evals in)
+
+Misses/partials by category so far: compiler prompt gaps = identity/account-claim (closed by
+lens, verified), payment-depth C1/C2 (open, candidate lens), evidence-sufficiency GT10 (open,
+candidate lens), generation-side traceability G6–G8 (open, candidate AI-output lens depth).
+Rubric-only gaps = none yet. Fixture ambiguity = none claimed. The recurring shape — each domain
+has one or two named planning blind spots, closable by surgical lenses without overfitting — is
+the failure-class library's design brief, accumulating evidence before it gets built.
+
 ### Acceptance line (per the amended v0.6 scope)
 
-v0.6 planning layer implemented · CPA full eval complete · XR-governance full eval complete ·
-cosmetic light eval complete · XR-orchestration fixture committed/eval pending · GroundTruth
-fixture committed/eval pending · auth fixture pending · multi-slice fixture pending ·
-**overall: PARTIAL DOGFOOD.**
+v0.6 planning layer implemented · CPA full eval complete (+ identity-lens remediation round) ·
+XR-governance full eval complete · **GroundTruth full eval complete (PASS, 9/1/0)** · cosmetic
+light eval complete · XR-orchestration fixture committed/eval pending · auth fixture pending ·
+multi-slice fixture pending · **overall: PARTIAL DOGFOOD** (three of four real-system fixtures
+fully evaluated; synthetic decomposition/auth sanity checks outstanding).
