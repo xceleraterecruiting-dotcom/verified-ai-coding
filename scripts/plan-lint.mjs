@@ -19,6 +19,12 @@
  *   - any slice lacks one of the eight required subsections (or has it empty)
  *   - a slice's allowed files intersect its forbidden files (per check-allowed-files matching)
  *   - any [L2]/[L3] invariant maps to no slice's "Invariants touched" or no acceptance criterion
+ *   - any [L2]/[L3] invariant a slice touches is absent from that slice's "### Proof obligations",
+ *     or referenced there without naming STRONG_RED (either the expected attributed STRONG_RED or
+ *     an explicit "STRONG_RED not applicable: <reason>"). The lint checks token presence; the
+ *     honesty of a not-applicable claim remains the cold plan-review's job. Promoted to a
+ *     mechanical rule from proof-10's multi-slice NEEDS_REVISION (v0.7 item 4): the INV-14
+ *     order-visibility gap was enumerable, so it belongs here, not in reviewer judgment.
  *   - any open question is [severity: high] with [status: open]  ← the ambiguity block
  *   - OQ/INV lines do not parse (unparseable risk lines are failures, not warnings)
  *
@@ -234,6 +240,29 @@ export function lintPlan(files) {
     const inSlice = slices.some((s) => (s.sections['### Invariants touched'] ?? '').includes(inv.id))
     if (!inSlice) failures.push(`${inv.id} [L${inv.level}] is mapped to no slice's "Invariants touched"`)
     if (!acceptance.includes(inv.id)) failures.push(`${inv.id} [L${inv.level}] appears in no acceptance criterion`)
+  }
+
+  // 6b. Proof-obligation mapping (v0.7, promoted from proof-10 multi-slice NEEDS_REVISION):
+  // every L2+ invariant a slice touches must be referenced in that slice's proof obligations,
+  // and the referencing line(s) must name STRONG_RED — the expected attributed STRONG_RED, or an
+  // explicit "STRONG_RED not applicable: <reason>". L0/L1 invariants are exempt.
+  for (const s of slices) {
+    const touched = s.sections['### Invariants touched'] ?? ''
+    const poBody = s.sections['### Proof obligations'] ?? ''
+    for (const inv of invariants.filter((i) => i.level >= 2 && touched.includes(i.id))) {
+      if (!poBody.includes(inv.id)) {
+        failures.push(
+          `Slice ${s.id}: touches ${inv.id} [L${inv.level}] but its "### Proof obligations" never references it — name the expected STRONG_RED or state why STRONG_RED is not applicable`,
+        )
+        continue
+      }
+      const referencingLines = poBody.split('\n').filter((l) => l.includes(inv.id))
+      if (!referencingLines.some((l) => l.includes('STRONG_RED'))) {
+        failures.push(
+          `Slice ${s.id}: proof obligation for ${inv.id} [L${inv.level}] does not name STRONG_RED (write the expected attributed STRONG_RED, or "STRONG_RED not applicable: <reason>")`,
+        )
+      }
+    }
   }
 
   // 7. Open questions: the ambiguity block

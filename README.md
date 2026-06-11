@@ -34,6 +34,17 @@ verified-implementation run = one ship-review.
 
 ## Versions
 
+- **v0.7 — in progress.** Item 4 of the rc1 backlog shipped first (it was mechanical):
+  plan-lint's **proof-obligation mapping rule** — every L2+ invariant a slice touches must be
+  referenced in that slice's proof obligations, naming the expected attributed STRONG_RED or an
+  explicit "STRONG_RED not applicable: <reason>". Promoted from proof-10's multi-slice
+  NEEDS_REVISION, where the gap (INV-14 order-visibility) was caught by a human reviewer and
+  diagnosed as mechanically enumerable; the committed plan appendices now serve as regression
+  fixtures, and the rule retroactively catches both reviewer-caught PO gaps (multi INV-14,
+  GroundTruth INV-11). Note: the rule is per-slice — deliberately stricter than the round-1
+  reviewers, who accepted one named PO anywhere; archived plans predate it and stay frozen.
+  Remaining backlog: payment-depth lens, AI-output depth lens, evidence-sufficiency lens.
+
 - **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
   regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
 - **v0.6 — spec → verified implementation planning** (status: **PARTIAL DOGFOOD**, see proof-10):

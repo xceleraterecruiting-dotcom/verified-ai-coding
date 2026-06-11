@@ -1,6 +1,13 @@
 #!/usr/bin/env node
-/** Deterministic tests for plan-lint's pure parsing/validation. No filesystem reads beyond this file. */
+/**
+ * Deterministic tests for plan-lint's pure parsing/validation. Pure cases read no filesystem;
+ * one regression case reads the committed proof-10 multi-slice plan appendix (skipped with a
+ * note when run from an installed copy without proofs/).
+ */
 
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
   bullets,
   fencedBlocks,
@@ -132,6 +139,75 @@ check('resolved high-severity question passes', lintPlan(highResolved).failures.
 
 const badOqLine = { ...green, 'open-questions.md': '# OQ\n\n## Open questions\n- OQ-2 needs a severity\n' }
 check('unparseable OQ line fails', lintPlan(badOqLine).failures.some((f) => f.includes('unparseable line')))
+
+// --- 6b. proof-obligation mapping rule (v0.7, promoted from proof-10 multi-slice NEEDS_REVISION) ---
+
+// L2+ invariant touched by a slice but absent from its proof obligations → fail
+const poMissing = {
+  ...green,
+  'implementation-slices.md': `# Slices\n\n${slice('1', 'gate', '- INV-1').replace(
+    '- STRONG_RED for INV-1',
+    '- some unrelated obligation',
+  )}`,
+}
+check('L2 touched but missing from proof obligations fails', lintPlan(poMissing).failures.some((f) => f.includes('never references it')))
+
+// L2+ invariant mapped to an acceptance criterion but missing a proof obligation → still fails
+// (the AC mapping is rule 6; the PO mapping is 6b — AC coverage is not a substitute)
+check(
+  'AC coverage does not substitute for a proof obligation',
+  lintPlan(poMissing).failures.some((f) => f.includes('never references it')) &&
+    poMissing['acceptance-criteria.md'].includes('INV-1'),
+)
+
+// L2+ invariant with a STRONG_RED-naming proof obligation → pass (the green fixture already does this)
+check('L2 with named STRONG_RED proof obligation passes', lintPlan(green).failures.length === 0)
+
+// referenced in the PO body but without naming STRONG_RED → fail
+const poNoStrongRed = {
+  ...green,
+  'implementation-slices.md': `# Slices\n\n${slice('1', 'gate', '- INV-1').replace(
+    '- STRONG_RED for INV-1',
+    '- a test that covers INV-1 somehow',
+  )}`,
+}
+check('PO referencing L2 invariant without STRONG_RED fails', lintPlan(poNoStrongRed).failures.some((f) => f.includes('does not name STRONG_RED')))
+
+// explicit not-applicable rationale satisfies the token check (honesty judged by plan-review)
+const poNotApplicable = {
+  ...green,
+  'implementation-slices.md': `# Slices\n\n${slice('1', 'gate', '- INV-1').replace(
+    '- STRONG_RED for INV-1',
+    '- INV-1: STRONG_RED not applicable: enforced by DB constraint, proven by schema trace',
+  )}`,
+}
+check('explicit STRONG_RED-not-applicable rationale passes', lintPlan(poNotApplicable).failures.length === 0)
+
+// L0/L1 invariants require no STRONG_RED-style proof obligation
+const l1Only = {
+  ...green,
+  'risk-map.md': green['risk-map.md'].replace('Initial classification: L2', 'Initial classification: L1').replace('Final level: L2', 'Final level: L1'),
+  'invariants.md': '# I\n\n## Invariants\n- INV-2 [L1] Slugs are unique.\n',
+  'implementation-slices.md': `# Slices\n\n${slice('1', 'gate', '- INV-2').replace('- STRONG_RED for INV-1', '- ordinary unit test for INV-2')}`,
+  'acceptance-criteria.md': '# AC\n\n## Acceptance criteria\n- AC-1 (INV-2): slugs unique.\n',
+}
+check('L1 invariant needs no STRONG_RED proof obligation', lintPlan(l1Only).failures.length === 0)
+
+// REGRESSION: the committed proof-10 multi-slice plan must now fail mechanically on INV-14
+// (order visibility — touched by Slice 9, AC16 exists, no named proof obligation), the exact gap
+// the cold plan-review caught manually. Skipped when proofs/ is absent (installed copy).
+const multiPlanDir = resolve(dirname(fileURLToPath(import.meta.url)), '../proofs/appendix/proof-10/multi-plan')
+if (existsSync(multiPlanDir)) {
+  const archived = {}
+  for (const name of readdirSync(multiPlanDir)) archived[name] = readFileSync(join(multiPlanDir, name), 'utf8')
+  const archivedResult = lintPlan(archived)
+  check(
+    'archived multi-slice plan: INV-14 proof-obligation gap now caught mechanically',
+    archivedResult.failures.some((f) => f.includes('INV-14') && (f.includes('never references it') || f.includes('does not name STRONG_RED'))),
+  )
+} else {
+  console.log('SKIP  archived multi-slice regression (proofs/ not present in this copy)')
+}
 
 // --- pure helpers ---
 check('sectionBody scopes to same heading depth', sectionBody('## A\na-body\n## B\nb', '## A').trim() === 'a-body')
