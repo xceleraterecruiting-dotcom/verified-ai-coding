@@ -1,8 +1,15 @@
-[
-  {
-    "file": "src/app/globals.css",
-    "find": "\n    animation-iteration-count: 1 !important;",
-    "replace": "",
-    "why": "Reintroduces the landing-page blocker: the reduced-motion reset only shortens animation-duration, leaving the infinite ticker cycling every frame (strobe)."
-  }
-]
+{
+  "findingId": "landing-A5",
+  "invariant": "The prefers-reduced-motion reset stops infinite animations (iteration count capped), not merely shortens them.",
+  "expectedTests": [
+    "stops infinite animations, not just shortens them"
+  ],
+  "mutations": [
+    {
+      "file": "src/app/globals.css",
+      "find": "\n    animation-iteration-count: 1 !important;",
+      "replace": "",
+      "why": "Reintroduces the landing-page blocker: the reduced-motion reset only shortens animation-duration, leaving the infinite ticker cycling every frame (strobe)."
+    }
+  ]
+}

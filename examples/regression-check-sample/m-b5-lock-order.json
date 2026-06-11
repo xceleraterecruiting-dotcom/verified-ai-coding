@@ -1,8 +1,15 @@
-[
-  {
-    "file": "src/server/services/registration.ts",
-    "find": "await tx.lockEvent(event.id);\n\n    const existingCount = await tx.registrations.countForEvent(event.id);",
-    "replace": "const existingCount = await tx.registrations.countForEvent(event.id);\n\n    await tx.lockEvent(event.id);",
-    "why": "Reintroduces portal blocker B5's bug shape under current interfaces: the capacity count is read BEFORE the event lock, so a rival submission landing while waiting on the lock is not seen."
-  }
-]
+{
+  "findingId": "portal-B5",
+  "invariant": "The registration capacity check-and-insert is serialized: the count is read only while holding the event-row lock.",
+  "expectedTests": [
+    "rejects a submission when a rival filled the last slot between findOpen and the lock"
+  ],
+  "mutations": [
+    {
+      "file": "src/server/services/registration.ts",
+      "find": "await tx.lockEvent(event.id);\n\n    const existingCount = await tx.registrations.countForEvent(event.id);",
+      "replace": "const existingCount = await tx.registrations.countForEvent(event.id);\n\n    await tx.lockEvent(event.id);",
+      "why": "Reintroduces portal blocker B5's bug shape under current interfaces: the capacity count is read BEFORE the event lock, so a rival submission landing while waiting on the lock is not seen."
+    }
+  ]
+}

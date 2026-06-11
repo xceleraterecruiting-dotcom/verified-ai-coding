@@ -26,7 +26,7 @@ export const VAC_HOME = process.env.VAC_HOME || join(homedir(), '.verified-ai-co
 const CLAUDE_SKILLS = join(homedir(), '.claude', 'skills')
 
 /** Support dirs copied verbatim into ~/.verified-ai-coding (structure preserved). */
-const COPY_DIRS = ['templates', 'prompts', 'scripts', 'agents', 'examples/independent-review-sample']
+const COPY_DIRS = ['templates', 'prompts', 'scripts', 'agents', 'examples/independent-review-sample', 'examples/regression-check-sample']
 /** Skills installed into ~/.claude/skills with references rewritten. */
 const SKILLS = ['verified-implementation', 'ship-review', 'independent-ship-review']
 /** Reference prefixes rewritten to absolute VAC_HOME paths. (probe/ is left relative on purpose.) */

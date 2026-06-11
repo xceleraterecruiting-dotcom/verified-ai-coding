@@ -78,6 +78,15 @@ If the changed files exceed the allowed list — or touch anything forbidden —
 
 Assemble `templates/review-bundle.md`: a single self-contained document a reviewer can read top to bottom with no other access. The reviewer is **pluggable** — it may be GPT-5.5, another model, or a fresh Claude session. GPT-5.5 is not the product; the bundle is model-agnostic on purpose.
 
+**Assemble the bundle's raw materials mechanically, not by hand.** Hand-assembled evidence drops things silently — fixture-proven: `git diff` omits untracked files, which once cost a full review round (proof-08). Run:
+
+```
+node scripts/make-bundle.mjs --repo <repo> --base <commit> --head <commit> --out <dir> \
+  [--include-untracked <path>]... [--capture tests:'npm test'] [--capture typecheck:'npx tsc --noEmit']
+```
+
+It emits the diff, FULL contents of files added in the range, untracked listings, captured gate outputs, and a `manifest.json` with sha256 hashes for every artifact. Paste from the bundle directory into `templates/review-bundle.md`; include the manifest so the reviewer can verify completeness. A Level 2+ review (see "Mechanized regression proof" below) without a manifest is hand-assembled evidence and must be labeled as such.
+
 Hand the bundle to the reviewer using `prompts/cold-reviewer.md` (the pasteable cold-review prompt). The reviewer persona it embodies is specified in `agents/reviewer-agent.md`.
 
 ## Step 3 — Verdict: PASS / NEEDS_REVIEW / FAIL
@@ -118,9 +127,43 @@ If and only if the verdict is FAIL or NEEDS_REVIEW, generate a bounded remediati
 
 After remediation, re-run gates and re-review.
 
+## Mechanized regression proof (risk-leveled)
+
+"This regression test would fail on the unfixed code" is a claim; `scripts/regression-check.mjs` turns it into a tool verdict. Requirements scale with risk so the harness stays unforgiving where stakes are real without becoming bureaucracy for cosmetic changes:
+
+| Risk level | Definition | Requirements |
+|---|---|---|
+| **0 — cosmetic** | presentation only, no behavior | make-bundle optional, regression-check optional |
+| **1 — low-risk logic** | behavior, but no invariant from the contract's business-risk call | make-bundle required; regression-check recommended |
+| **2 — money, auth, permissions, user data, status transitions** | anything the contract flags as a business-invariant risk | make-bundle + manifest required; **one STRONG_RED per confirmed-blocker remediation** required; Runtime verification field required on the scorecard |
+| **3 — regulated / production-critical** | real harm at scale | all of Level 2, plus enforced reviewer isolation and runtime smoke or staging E2E before any "production-ready" language |
+
+Classify the diff's level from the contract's business-invariant risk call. Escalating a level needs no justification; downgrading one must be argued in the scorecard.
+
+**Proof-strength labels** (the tool emits these; never re-grade them by hand):
+
+- **STRONG_RED** — assertion-level failure under counter-mutation mode, GREEN on fixed HEAD. The only label that proves a test discriminates.
+- **WEAK_RED_COMPILE** — old/base code fails to compile, import, or link. Proves the test is new, not that it catches the bug.
+- **INVALID_RED_ENV** — failure caused by setup/environment. Proves nothing; fix the harness.
+- **NOT_DISCRIMINATING** — the test passes with the bug reintroduced. The test does not exercise the fix.
+
+**Mutation validity rule:** *a mutation is valid only if it removes or weakens the claimed fix while preserving the modern test/interface shape.* The spec must carry provenance — `findingId`, `invariant`, `expectedTests` (the assertions expected to discriminate) — and the tool enforces it: a declared discriminator that doesn't fail is **EXPECTATION_MISMATCH** (exit 2), undeclared extra failures are flagged as possible over-broad mutation, and a spec without provenance is labeled **UNATTRIBUTED** and is not proof-grade. This is what stops a fabricated STRONG_RED made by mutating unrelated code until something fails.
+
+```
+node scripts/regression-check.mjs --repo <repo> --tests <test-file>... \
+  --mutations <spec.json> [--out <dir>]
+```
+
+Spec shape (see `examples/regression-check-sample/` for real ones): `{ "findingId": "...", "invariant": "...", "expectedTests": ["substring of assertion name"], "mutations": [{ "file", "find", "replace", "why" }] }`. Each `find` must occur exactly once.
+
+**Verdict rules:**
+- A PASS may **not** cite WEAK_RED_COMPILE as proof that a regression test discriminates.
+- A PASS may cite STRONG_RED only when the mutation spec is included in the bundle and tied to the original finding (no UNATTRIBUTED, no EXPECTATION_MISMATCH).
+- Base mode (`--base <sha>`) is permanently advisory — fixture-proven (proof-08) to fake both failures *and* passes via missing-export→undefined degradation. Use it for context, never as the proof.
+
 ## Step 7 — Ship/no-ship scorecard
 
-Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Grounding, Client-interpretation, Safety, Tests, Redteam, Observability), a **Scope** row (allowed-files gate PASS/FAIL), and a single decision — **SHIP** or **DO NOT SHIP**. Each evidence row carries its proof-depth label so a green check can't hide a shallow proof. The scorecard is read-only output. It passes only when the invariant is enforced below the UI, the diff is within approved scope, and every redteam case behaves correctly.
+Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Grounding, Client-interpretation, Safety, Tests, Redteam, Observability), a **Scope** row (allowed-files gate PASS/FAIL), and a single decision — **SHIP** or **DO NOT SHIP**. Each evidence row carries its proof-depth label so a green check can't hide a shallow proof. For Level 2+ work the scorecard must also include the **Regression proof** block (one entry per remediated blocker, citing the regression-check result and mutation spec) and the **Runtime verification** field — `NONE` blocks "production-ready" language for Level 2+ regardless of how strong the static proof is. The scorecard is read-only output. It passes only when the invariant is enforced below the UI, the diff is within approved scope, and every redteam case behaves correctly.
 
 ## Reviewer context
 

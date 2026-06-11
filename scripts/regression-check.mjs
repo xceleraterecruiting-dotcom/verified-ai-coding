@@ -74,6 +74,46 @@ export function parseArgs(argv) {
   return args
 }
 
+/**
+ * Parse a mutations spec. Pure. Two accepted shapes:
+ *   legacy array:  [{ file, find, replace, why }]
+ *   provenance:    { findingId, invariant, expectedTests: [substring], mutations: [...] }
+ * Proof-grade STRONG_RED requires the provenance shape: the mutation must be tied to its finding
+ * and declare which assertions are expected to discriminate — that is what stops a fabricated
+ * STRONG_RED made by mutating unrelated code until something fails.
+ */
+export function parseMutationsSpec(raw) {
+  const spec = typeof raw === 'string' ? JSON.parse(raw) : raw
+  const norm = Array.isArray(spec)
+    ? { findingId: null, invariant: null, expectedTests: [], mutations: spec }
+    : {
+        findingId: spec.findingId ?? null,
+        invariant: spec.invariant ?? null,
+        expectedTests: Array.isArray(spec.expectedTests) ? spec.expectedTests : [],
+        mutations: spec.mutations,
+      }
+  if (!Array.isArray(norm.mutations) || norm.mutations.length === 0) {
+    throw new Error('mutations spec must contain a non-empty mutations array')
+  }
+  for (const m of norm.mutations) {
+    if (!m.file || !m.find || m.replace === undefined) throw new Error('each mutation needs file, find, replace')
+  }
+  return norm
+}
+
+/**
+ * Check the discriminating assertions against the spec's declared expectations. Pure.
+ * `expectedTests` entries are substrings matched against failing assertion fullNames.
+ * `missing` = a declared discriminator did NOT fail → the mutation does not prove the finding.
+ * `unexpected` = assertions failed that nothing declared → possible over-broad mutation.
+ */
+export function checkExpectations(fileResults, expectedTests) {
+  const failing = fileResults.flatMap((f) => (f.failedAssertions ?? []).map((a) => a.fullName))
+  const missing = expectedTests.filter((e) => !failing.some((n) => n.includes(e)))
+  const unexpected = expectedTests.length > 0 ? failing.filter((n) => !expectedTests.some((e) => n.includes(e))) : []
+  return { failing, missing, unexpected }
+}
+
 /** Apply one counter-mutation to file content. Pure. `find` must occur exactly once. */
 export function applyMutation(content, mutation) {
   const first = content.indexOf(mutation.find)
@@ -206,16 +246,12 @@ export function main(argv) {
     fail(`tracked working tree is dirty (${dirty.length} paths); commit/stash or pass --allow-dirty`)
   }
 
-  let mutations = null
+  let spec = null
   if (args.mutations) {
     try {
-      mutations = JSON.parse(readFileSync(resolve(args.mutations), 'utf8'))
+      spec = parseMutationsSpec(readFileSync(resolve(args.mutations), 'utf8'))
     } catch (e) {
       fail(`cannot read mutations spec ${args.mutations}: ${e.message}`)
-    }
-    if (!Array.isArray(mutations) || mutations.length === 0) fail('mutations spec must be a non-empty array')
-    for (const m of mutations) {
-      if (!m.file || !m.find || m.replace === undefined) fail('each mutation needs file, find, replace')
     }
   }
 
@@ -224,7 +260,7 @@ export function main(argv) {
   const wtRoot = mkdtempSync(join(tmpdir(), 'regression-check-wt-'))
   const worktrees = []
 
-  const mode = mutations ? 'mutations' : args.revertFiles.length ? 'revert-files' : 'base'
+  const mode = spec ? 'mutations' : args.revertFiles.length ? 'revert-files' : 'base'
   const result = {
     tool: 'verified-ai-coding/regression-check',
     createdAt: new Date().toISOString(),
@@ -257,7 +293,7 @@ export function main(argv) {
     const applied = []
     if (mode === 'mutations') {
       redWt = makeWorktree(repo, headSha, wtRoot, 'red')
-      for (const m of mutations) {
+      for (const m of spec.mutations) {
         const abs = join(redWt, m.file)
         if (!existsSync(abs)) fail(`mutation target does not exist at head: ${m.file}`)
         const before = readFileSync(abs, 'utf8')
@@ -288,6 +324,10 @@ export function main(argv) {
     const { exitCode, report } = runTests(redWt, args.testCommand, args.tests, join(out, 'vitest-red.json'), join(out, 'red.log'))
     const fileResults = report ? classifyVitestReport(report, (p) => relative(redWt, p)) : args.tests.map((t) => ({ file: t, classification: 'UNCLASSIFIED', failedAssertions: [] }))
     result.red = { exitCode, applied, files: fileResults, verdict: overallRedVerdict(fileResults) }
+    if (mode === 'mutations') {
+      result.red.provenance = { findingId: spec.findingId, invariant: spec.invariant, expectedTests: spec.expectedTests }
+      result.red.expectation = checkExpectations(fileResults, spec.expectedTests)
+    }
   } finally {
     if (!args.keepWorktrees) {
       for (const wt of worktrees) removeWorktree(repo, wt)
@@ -306,6 +346,21 @@ export function main(argv) {
     // (toThrowError(undefined) accepts any error). Base-mode is advisory, never proof-grade.
     verdictLine += ' [ADVISORY: base-mode results are contaminated by missing-export→undefined degradation in both directions; use --mutations for proof-grade RED]'
   }
+  if (mode === 'mutations') {
+    // A mutation is valid only if it removes or weakens the claimed fix while preserving the
+    // modern test/interface shape — and the spec must say which finding it resurrects and which
+    // assertions are expected to catch it. Otherwise STRONG_RED could be fabricated by mutating
+    // unrelated code until something fails.
+    const exp = result.red.expectation
+    if (spec.expectedTests.length > 0 && exp.missing.length > 0) {
+      verdictLine = `EXPECTATION_MISMATCH — declared discriminator(s) did not fail under the mutation: ${exp.missing.join('; ')} [was: ${verdictLine}]`
+    } else if (exp.unexpected.length > 0) {
+      verdictLine += ` [WARNING: ${exp.unexpected.length} undeclared assertion(s) also failed — check the mutation is not over-broad]`
+    }
+    if (!spec.findingId || spec.expectedTests.length === 0) {
+      verdictLine += ' [UNATTRIBUTED: spec lacks findingId/expectedTests — not proof-grade until the mutation is tied to its finding]'
+    }
+  }
   result.verdict = verdictLine
 
   writeFileSync(join(out, 'result.json'), JSON.stringify(result, null, 2) + '\n')
@@ -323,6 +378,13 @@ export function main(argv) {
     '',
     `## Red phase (${mode})`,
     '',
+    ...(result.red.provenance
+      ? [
+          `- Finding: ${result.red.provenance.findingId ?? '(unattributed)'}`,
+          `- Invariant: ${result.red.provenance.invariant ?? '(undeclared)'}`,
+          `- Expected discriminators: ${result.red.provenance.expectedTests.join('; ') || '(none declared)'}`,
+        ]
+      : []),
     ...result.red.applied.map((a) => `- applied: ${JSON.stringify(a)}`),
     '',
     ...result.red.files.map((r) =>
@@ -339,7 +401,8 @@ export function main(argv) {
 
   console.log(`regression-check: ${verdictLine}`)
   console.log(`results: ${out}`)
-  if (result.red.verdict === 'INVALID_RED_ENV' || (result.green && !result.green.pass)) process.exit(2)
+  const expectationFailed = result.red.expectation && result.red.provenance.expectedTests.length > 0 && result.red.expectation.missing.length > 0
+  if (result.red.verdict === 'INVALID_RED_ENV' || expectationFailed || (result.green && !result.green.pass)) process.exit(2)
 }
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)

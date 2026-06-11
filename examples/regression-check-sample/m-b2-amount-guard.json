@@ -1,8 +1,16 @@
-[
-  {
-    "file": "src/server/services/payments.ts",
-    "find": "if (args.amountTotalCents !== enrollment.amountDueCents || (args.currency ?? \"\").toLowerCase() !== \"usd\") {",
-    "replace": "if (false) {",
-    "why": "Reintroduces portal blocker B2 under current interfaces: the webhook activates without verifying the captured amount/currency against amountDueCents."
-  }
-]
+{
+  "findingId": "portal-B2",
+  "invariant": "An enrollment activates only on a captured payment whose amount and currency match amountDueCents (usd).",
+  "expectedTests": [
+    "refuses an amount that does not match amountDueCents",
+    "refuses a non-usd currency"
+  ],
+  "mutations": [
+    {
+      "file": "src/server/services/payments.ts",
+      "find": "if (args.amountTotalCents !== enrollment.amountDueCents || (args.currency ?? \"\").toLowerCase() !== \"usd\") {",
+      "replace": "if (false) {",
+      "why": "Reintroduces portal blocker B2 under current interfaces: the webhook activates without verifying the captured amount/currency against amountDueCents."
+    }
+  ]
+}

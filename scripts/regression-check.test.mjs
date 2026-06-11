@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Deterministic tests for regression-check's pure classification/mutation logic. No git/network. */
 
-import { applyMutation, classifyFileResult, classifyVitestReport, overallRedVerdict, parseArgs } from './regression-check.mjs'
+import { applyMutation, checkExpectations, classifyFileResult, classifyVitestReport, overallRedVerdict, parseArgs, parseMutationsSpec } from './regression-check.mjs'
 
 let failures = 0
 const check = (n, c) => { console.log(`${c ? 'OK  ' : 'MISS'}  ${n}`); if (!c) failures++ }
@@ -14,6 +14,26 @@ check('parseArgs mutations mode ok', parseArgs(['--tests', 't.ts', '--mutations'
 check('parseArgs mutations excludes base', throws(() => parseArgs(['--tests', 't.ts', '--mutations', 'm.json', '--base', 'abc'])))
 check('parseArgs revert-files requires base', throws(() => parseArgs(['--tests', 't.ts', '--revert-files', 'f.ts'])))
 check('parseArgs base mode ok', parseArgs(['--tests', 't.ts', '--base', 'abc']).base === 'abc')
+
+// parseMutationsSpec — legacy array and provenance object shapes
+const legacy = parseMutationsSpec('[{"file":"f","find":"a","replace":"b"}]')
+check('spec: legacy array accepted, unattributed', legacy.findingId === null && legacy.mutations.length === 1)
+const prov = parseMutationsSpec('{"findingId":"B2","invariant":"inv","expectedTests":["t1"],"mutations":[{"file":"f","find":"a","replace":"b"}]}')
+check('spec: provenance shape parsed', prov.findingId === 'B2' && prov.expectedTests[0] === 't1')
+check('spec: rejects empty mutations', throws(() => parseMutationsSpec('{"mutations":[]}')))
+check('spec: rejects mutation missing fields', throws(() => parseMutationsSpec('[{"file":"f"}]')))
+
+// checkExpectations — mutation-validity contract: declared discriminators must fail;
+// undeclared failures flag a possibly over-broad mutation
+const fr = (names) => [{ failedAssertions: names.map((n) => ({ fullName: n })) }]
+const ok = checkExpectations(fr(['B2 suite refuses an amount that does not match']), ['refuses an amount'])
+check('expectation: declared discriminator failed → no missing', ok.missing.length === 0 && ok.unexpected.length === 0)
+const miss = checkExpectations(fr(['some other test']), ['refuses an amount'])
+check('expectation: declared discriminator did not fail → missing', miss.missing.length === 1 && miss.unexpected.length === 1)
+const broad = checkExpectations(fr(['refuses an amount', 'unrelated thing broke']), ['refuses an amount'])
+check('expectation: undeclared failure flagged as over-broad', broad.missing.length === 0 && broad.unexpected[0] === 'unrelated thing broke')
+const noDecl = checkExpectations(fr(['anything']), [])
+check('expectation: no declarations → nothing unexpected (legacy)', noDecl.unexpected.length === 0)
 
 // applyMutation — exactly-once contract
 check('applyMutation replaces single occurrence', applyMutation('a GUARD b', { file: 'f', find: 'GUARD', replace: 'NOOP' }).content === 'a NOOP b')

@@ -26,6 +26,24 @@ Each evidence cell carries a **proof-depth label** (SOURCE-TRACE / UNIT-MOCK / S
 
 > If the work came from a broad audit, link the **triage report** and name the **single selected slice** here; deferred findings stay in the queue, not in this diff.
 
+## Regression proof
+
+> Required for Level 2+ (money, auth, permissions, user data, status transitions): one entry per
+> remediated blocker. A PASS may not cite WEAK_RED_COMPILE as discrimination proof, and may cite
+> STRONG_RED only with the mutation spec included and tied to the finding (no UNATTRIBUTED /
+> EXPECTATION_MISMATCH). See "Mechanized regression proof" in `ship-review`.
+
+- **Risk level:** 0 / 1 / 2 / 3 (downgrades must be argued here)
+- **Bundle manifest:** path + verified? yes / no (Level 2+: required)
+
+| Finding ID | Mutation spec | Mode | Result on mutation | Result on HEAD | Classification |
+|---|---|---|---|---|---|
+|  |  | mutations |  |  | STRONG_RED / WEAK_RED_COMPILE / INVALID_RED_ENV / NOT_DISCRIMINATING |
+
+- **Runtime verification:** NONE / LOCAL_SMOKE / INTEGRATION / STAGING_E2E / PROD_CANARY
+  > `NONE` blocks "production-ready" language for Level 2+ even when static proof is strong: a
+  > traced-but-never-run PASS is a static proof, not an operational one.
+
 ## Reviewer context
 
 > Required. A PASS without this section is incomplete evidence (see `docs/reviewer-context.md`).
