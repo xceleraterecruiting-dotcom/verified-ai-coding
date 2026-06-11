@@ -1,0 +1,8 @@
+[
+  {
+    "file": "src/server/services/registration.ts",
+    "find": "await tx.lockEvent(event.id);\n\n    const existingCount = await tx.registrations.countForEvent(event.id);",
+    "replace": "const existingCount = await tx.registrations.countForEvent(event.id);\n\n    await tx.lockEvent(event.id);",
+    "why": "Reintroduces portal blocker B5's bug shape under current interfaces: the capacity count is read BEFORE the event lock, so a rival submission landing while waiting on the lock is not seen."
+  }
+]

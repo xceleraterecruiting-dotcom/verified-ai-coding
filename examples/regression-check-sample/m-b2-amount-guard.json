@@ -1,0 +1,8 @@
+[
+  {
+    "file": "src/server/services/payments.ts",
+    "find": "if (args.amountTotalCents !== enrollment.amountDueCents || (args.currency ?? \"\").toLowerCase() !== \"usd\") {",
+    "replace": "if (false) {",
+    "why": "Reintroduces portal blocker B2 under current interfaces: the webhook activates without verifying the captured amount/currency against amountDueCents."
+  }
+]

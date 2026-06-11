@@ -1,0 +1,8 @@
+[
+  {
+    "file": "src/app/globals.css",
+    "find": "\n    animation-iteration-count: 1 !important;",
+    "replace": "",
+    "why": "Reintroduces the landing-page blocker: the reduced-motion reset only shortens animation-duration, leaving the infinite ticker cycling every frame (strobe)."
+  }
+]
