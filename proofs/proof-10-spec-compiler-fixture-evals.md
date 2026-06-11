@@ -231,6 +231,54 @@ the failure-class library's design brief, accumulating evidence before it gets b
 - **MS9** non-goals explicit
 - **MS10** no invented requirements
 
+## Multi-slice decomposition eval — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
+
+Same protocol (fence held, grammar-read disclosed; lint verified locally).
+
+- **Lint:** structurally clean first pass; BLOCKED on 4 high-severity OQs — under-13
+  determination/linkage verification, SMS consent + provider, guardian consent for public minor
+  badges, payment processor + refund policy. **Self-escalated L2→L3** on the badge-display path —
+  the fixture's buried trap ("badges show on their public recruiting profile" = minors' data on
+  public output) — judged honest and correctly scoped per-area by the reviewer ("no
+  level-shopping").
+- **Decomposition (the eval's focus): excellent.** 12 single-concern slices, explicit acyclic
+  graph, schema isolated in two pure-migration slices (store schema split out *because* its shape
+  depends on a blocked OQ), authorization as its own single-enforcement-point slice consumed by
+  all features, four mutually independent mid-graph slices, per-slice OQ gates.
+- **Plan-review verdict: NEEDS_REVISION** — Q1–Q6 YES; Q7 PARTIAL without recorded rationale:
+  INV-14 [L2] (order visibility purchaser-only) has an AC and slice tests but no named STRONG_RED
+  proof obligation. Both applicable lenses PARTIAL: payment lens again missing amount/currency/
+  captured-status verification at grant time; identity lens missing identifier-reassignment-after-
+  binding (phone reassignment vs SMS consent).
+- **Q8: 9 HIT / 1 PARTIAL / 0 MISS.** MS6 PARTIAL categorized **(1) compiler prompt gap** — with
+  a sharper sub-diagnosis from the reviewer: the omission is *mechanically enumerable* (every
+  touched L2+ invariant must appear in that slice's proof obligations), i.e. closable as a
+  **plan-lint check**, not only a prompt lens. Named candidate: lint rule "L2+ invariant in
+  'Invariants touched' ⇒ present in that slice's '### Proof obligations'". Not added this round,
+  per scope.
+
+## Release-decision summary (v0.6, all fixtures evaluated)
+
+**Aggregate, post-remediation:** 7 fixtures evaluated (4 real-system + 3 synthetic). Verdicts:
+PASS ×4 (XR-governance, GroundTruth, XR-orchestration, auth-tenancy), NEEDS_REVISION ×2 (CPA r2,
+multi-slice), proportionate-L0 ×1 (cosmetic). Ground truth: **41 HIT / 9 PARTIAL / 0 MISS** —
+the only MISS ever recorded (C4) was closed by the identity lens and verified. Every non-HIT is
+categorized; recurrence counts: payment depth ×3 (CPA r1, CPA r2, multi-slice), AI-output
+generation depth ×2 (XR-governance, XR-orchestration), evidence-sufficiency ×1 (GroundTruth),
+per-invariant PO completeness ×1 (multi-slice, mechanically closable), rubric-only ×1 (AT9),
+acceptable limitation ×1 (AT5).
+
+| Option | Assessment |
+|---|---|
+| 1. v0.6 full release | **Not supportable.** Two NEEDS_REVISION verdicts share one family of causes, and two lens candidates have met the graduation bar without being built. |
+| 2. **v0.6-rc1 with documented gaps** | **Recommended.** The planner demonstrably does senior-grade work (blocks the right ambiguities, self-escalates honestly, decomposes cleanly, 0 misses); the residual gaps are named, bounded, recurrence-counted, and have defined fixes. Release notes must list: payment-depth lens (graduated, ×3), AI-output depth lens (graduated, ×2), evidence-sufficiency lens (×1), plan-lint PO-mapping check (mechanical). |
+| 3. Hold pending one surgical lens | Defensible but inferior: the top gap (payment depth) would still leave the second graduated lens unbuilt, and the re-eval cycle re-opens the suite for one increment. Better spent as the first v0.7 move. |
+
+**Recommendation: Option 2 — tag `v0.6-rc1`,** with the four named items as the v0.7 work list
+(payment-depth lens → re-run CPA + multi-slice; AI-output depth lens → re-run one XR fixture;
+evidence-sufficiency lens; plan-lint PO-mapping rule + unit tests). Decision is the operator's to
+ratify; recorded here as the builder's recommendation.
+
 ## Auth-tenancy eval — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
 
 Same protocol (fence held, grammar-read disclosed; lint verified locally).
@@ -292,8 +340,8 @@ the graduated candidate. Not added this round, per scope.
 
 v0.6 planning layer implemented · CPA full eval complete (+ identity-lens remediation round) ·
 XR-governance full eval complete · GroundTruth full eval complete (PASS, 9/1/0) ·
-XR-orchestration full eval complete (PASS, 6/6 HIT) · **auth-tenancy full eval complete (PASS,
-8/2/0)** · cosmetic light eval complete · multi-slice fixture pending · **overall: PARTIAL
-DOGFOOD** (one synthetic sanity check — multi-slice decomposition — outstanding before the
-explicit release decision; current leaning per the operator: v0.6-rc1 with documented
-compiler-prompt gaps rather than full release, given CPA's NEEDS_REVISION payment-depth residue).
+XR-orchestration full eval complete (PASS, 6/6 HIT) · auth-tenancy full eval complete (PASS,
+8/2/0) · **multi-slice full eval complete (NEEDS_REVISION, 9/1/0)** · cosmetic light eval
+complete · **fixture suite COMPLETE — aggregate 41 HIT / 9 PARTIAL / 0 MISS post-remediation ·
+release recommendation: v0.6-rc1 with documented gaps (see Release-decision summary; operator to
+ratify).**
