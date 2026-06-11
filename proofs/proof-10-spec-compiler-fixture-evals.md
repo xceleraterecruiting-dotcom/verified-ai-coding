@@ -241,6 +241,45 @@ Nothing else changed. Reruns: **CPA and multi-slice only.**
   "approval" semantics.
 - Lens-driven defaults are labeled lens-derived where the spec doesn't state them.
 
+## v0.7 payment-depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
+
+First compiles under both the payment-depth lens and lint rule 6b (CPA-r3 needed one lint
+iteration to satisfy the per-slice single-line STRONG_RED format — the rule self-corrects in the
+compile loop, as predicted).
+
+| Measure | CPA r2 (identity lens only) | **CPA r3 (+ payment lens)** | Multi r1 | **Multi r2 (+ payment lens, + lint 6b)** |
+|---|---|---|---|---|
+| Verdict | NEEDS_REVISION | **PASS** | NEEDS_REVISION | **PASS** |
+| Payment lens | PARTIAL (3 gaps) | **YES, 12/12 point-by-point** | PARTIAL (2 gaps) | **YES, 12/12 point-by-point** |
+| Ground truth | 3H/2P/0M | **5/5 HIT** (C1, C2 PARTIAL→HIT as pre-registered; C3 in-flight race now serialized + tested both interleavings) | MS6 PARTIAL (INV-14 PO gap) | **P-A…P-E 5/5 HIT** incl. P-B (the INV-14-class PO, lint-forced AND judged substantive, not a checkbox) |
+
+**Pre-registered expectations: all met.** Overfitting falsifiers: **clean on both** — the multi
+reviewer verified the lens is scoped "to Slices 8–11 only" with zero payment vocabulary leaking
+into board/files/RSVP/badges/CSV slices, no status/approval escalation (counter-evidence sought,
+none found), and lens-derived labeling that *discriminates* (spec-backed invariants carry spec
+citations; one lens-free default labeled "lens-free, needs confirmation").
+
+**The adversarial adjudication finding (CPA r3 came back lint-GREEN with zero high blockers,
+where r2 blocked on money-model questions):** the reviewer judged the fail-closed-assumption
+posture mostly legitimate — every adopted default is labeled, carries its rejected reading, and
+sits behind a human-confirmed charge; nothing silently resolved. Two real findings survived:
+(1) OQ-2 (pricing by registered position vs cohort placement) is graded medium but "changes
+charged amounts," violating the plan's OWN severity rule — should be high or founder-confirmed
+pre-build; (2) the full-year-entitlement question is absorbed into a non-goal rather than asked.
+Q3 = PARTIAL with rationale; two non-blocking founder-confirmation recommendations recorded.
+**Watch item (recorded, not actioned):** lens-mandated fail-closed defaults can *absorb* founder
+questions that deserve blocking severity — severity grading remains model judgment, and the
+rubric's Q3 adjudication is the working check. If this recurs, the candidate fix is a lens
+provision ("a lens default may not downgrade a money-model question below high"), not a new tool.
+
+**Residue (recorded):** multi-r2 identity lens PARTIAL — post-binding mutation behavior (DOB
+edits, parent↔athlete reassignment, consented-phone reassignment) remains the recurring
+identifier-reassignment tail; foldable into OQ-004's resolution. Multi-r2 also surfaced a NEW
+high blocker round 1 missed entirely: RSVP-vs-actual-attendance source authority.
+
+**Lens disposition: ACCEPTED** — closed every gap it pre-registered, on both fixtures, with
+clean falsifiers. No release label change (rc1 stands; that decision is separate and explicit).
+
 ## Multi-slice decomposition eval — pre-registration (committed BEFORE the compile; classes supplied by the user; synthetic fixture, registered for goalpost discipline)
 
 - **MS1** decomposes into independently buildable slices
