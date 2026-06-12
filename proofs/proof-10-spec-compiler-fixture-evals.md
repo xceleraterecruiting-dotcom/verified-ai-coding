@@ -290,6 +290,38 @@ in the compiler skill + rubric. Rerun: **GroundTruth only** (the fixture that ea
 - Lens-derived requirements labeled lens-derived.
 - The dashboard does not become launch-gate bureaucracy for metrics nobody decides on.
 
+## v0.7 evidence-sufficiency lens round — results (2026-06-11; plan + verbatim transcript in `appendix/proof-10/`)
+
+- **Lint:** structurally clean first pass; BLOCKED on 3 high OQs — and the lens's signature
+  result: **"we launch when the numbers look good" became blocking OQ-2** ("what are the numeric
+  thresholds … who signs the go decision (PM? Legal?)"), with Slice 8 built as a literal
+  PASS / FAIL / INSUFFICIENT_EVIDENCE launch gate that **refuses to emit PASS while thresholds
+  are unset**.
+- **Plan-review verdict: PASS** — Q1–Q7 all YES; evidence-sufficiency lens YES element-by-element
+  (decision↔evidence map recorded on every gate decision; metric entities carry numerator/
+  denominator/exclusions/non-claims; evidence voided across four version dimensions;
+  contradiction → INSUFFICIENT_EVIDENCE; negative control: "a never-red detector proves
+  nothing"). Severity discipline held — the lens defaults cover only mechanism; the *values*
+  (mapping content, thresholds, directory) stay user-grade and blocking.
+- **Q8: 11/11 HIT.** GT1–GT9 held. **GT10 PARTIAL→HIT in full** (explicit trichotomy; thin/
+  stale/contradictory evidence "never in PASS"; default no-go). **ES-a HIT — the qualitative
+  jump:** round 1 *asked* about the groundedness judge's error rate via an OQ; round 2 *forces*
+  it — INV-13 + an AC making the gate refuse judge-derived evidence lacking a calibration
+  report, with a named STRONG_RED.
+- **Overfitting falsifiers: clean on all four** — sufficiency machinery appears only in the
+  eval/canary/gate slices; ordinary unit tests carry no sample-size ceremony; labels discriminate
+  (payment lens recorded not-triggered, minors item recorded N/A); the dashboard renders exactly
+  the four metrics the gate consumes, nothing dragged in.
+
+**Lens disposition: ACCEPTED. v0.7 backlog COMPLETE** — all four items shipped, each
+pre-registered, re-proven on the fixture(s) that earned it, accepted on falsifier-checked
+evidence: (1) plan-lint PO-mapping rule, (2) payment-depth lens, (3) AI-output depth lens,
+(4) evidence-sufficiency lens. The rc1 gap list is closed: every fixture that ever scored
+NEEDS_REVISION has since been re-proven PASS under the deeper rubric (CPA r3, multi r2), and the
+two PASS-with-partials fixtures re-proven at full depth (XR-gov r2 9/9, XR-orch r2 8/8, GT r2
+11/11). Release-label decision (v0.7 tag, or rc1 → v0.6 final) belongs to the operator; nothing
+is relabeled here.
+
 ## v0.7 AI-output depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
 
 | Measure | XR-gov r1 | **XR-gov r2 (+ AI-output lens)** | XR-orch r1 | **XR-orch r2 (+ AI-output lens)** |
