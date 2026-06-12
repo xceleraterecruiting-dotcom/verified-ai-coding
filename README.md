@@ -120,6 +120,32 @@ The case study separates builder-authored interpretation from these rerunnable a
 documents tell you which is which. Verbatim cold-review transcripts live in the fixture repo
 under `verification/transcripts/`.
 
+## Public evidence boundary
+
+This repo is the harness plus its proof artifacts. Some **subject repositories used as fixtures
+remain private** because they contain business-sensitive material (a real payments application, a
+permission-aware enterprise assistant, an unreleased content engine). Consequences for a public
+reader, stated plainly:
+
+- **You can inspect:** every script, skill, template, and rubric; the proof documents
+  (`proofs/`) with their pre-registrations; verbatim cold-review transcripts and complete
+  compiled-plan appendices (`proofs/appendix/`); hashed result JSONs; and the release tags.
+- **You can re-run:** the tool unit suites and the fixture *planning* evals (the fixture specs
+  in `examples/spec-compiler-fixtures/` are in this repo) — compile a plan, lint it, review it.
+- **You cannot re-run end-to-end:** the v0.5 code-level cases (live `regression-check` against
+  the payments fixture repo's git history, manifest re-verification against its bundles) — those
+  require the private subject repo. The generated proof artifacts and transcripts from those runs
+  are committed here; the claims that rest on them are labeled in the case study's disclosure
+  section. This is the harness's own evidence-sufficiency rule applied to itself: we state what
+  the public evidence can and cannot show rather than letting "it's reproducible" blur the two.
+
+**Fixture data note:** three fixtures are synthetic (auth, multi-slice, cosmetic); the others are
+paraphrased from real product intent with answer-key material excluded (provenance headers in
+each file say exactly what was excluded and why). Any real business details that appear inside
+fixture specs and compiled-plan appendices — including pricing figures — are **historical fixture
+evidence preserved for verbatim-evidence integrity, not an active offer, current price list, or
+public pricing page.**
+
 ## What this is not
 
 - **Not formal verification.** No proofs about all executions — evidence about specific invariants, specific mutations, specific tests.
