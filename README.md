@@ -34,49 +34,16 @@ verified-implementation run = one ship-review.
 
 ## Versions
 
-- **v0.7.0 — decision-grade planning** (tagged `v0.7.0`; supersedes `v0.6-rc1`): the release
-  where the spec compiler got materially better at saying *"show me the mechanism, show me the
-  evidence, show me who decides, show me what blocks launch — and do not confuse a passing test
-  with permission to act."* Four items, each pre-registered before its eval, re-proven on the
-  fixture(s) that earned it, and accepted on falsifier-checked evidence:
-  1. **plan-lint proof-obligation mapping rule** (mechanical) — every L2+ invariant a slice
-     touches needs a named STRONG_RED proof obligation in that slice (or an explicit
-     not-applicable rationale). Promoted from a reviewer-caught gap; retroactively catches both
-     PO gaps human reviewers had found by hand.
-  2. **Payment-depth lens** (12 requirements) — grant-time amount/currency/captured
-     verification, session supersession, reversal-vs-payment race serialization,
-     money-moved-but-state-rejects reconciliation, fail-closed payment data, money-state audit.
-     Re-proven: CPA r3 PASS 5/5, multi-slice r2 PASS 5/5.
-  3. **AI-output depth lens** (15 requirements) — per-generation model/prompt-version/run
-     capture, claim provenance, no-fabrication by verification not instruction, generator
-     goldens + adversarial cases, safe decline, leak-safe surfaces, structured-output validation,
-     L2+ human approval, dry-run-first as a render-and-log stage, minors/likeness checks,
-     end-to-end audit. Re-proven: XR-governance r2 PASS 9/9, XR-orchestration r2 PASS 8/8.
-  4. **Evidence-sufficiency lens** (9 requirements) — a claim is satisfied only when the plan
-     names the exact evidence, the decision it supports, the sufficiency threshold, and the
-     behavior when evidence is missing/stale/ambiguous/contradicted. Launch gates carry an
-     explicit **PASS / FAIL / INSUFFICIENT_EVIDENCE** trichotomy defaulting to no-go; judged
-     metrics require instrument calibration before they gate anything. Re-proven: GroundTruth r2
-     PASS 11/11 — "we launch when the numbers look good" became a blocking question ("what are
-     the numbers, and who signs?").
-  Every fixture that ever scored NEEDS_REVISION has been re-proven PASS under the deeper rubric;
-  every lens round recorded overfitting falsifiers (lens-scoping, no escalation-for-vocabulary,
-  discriminating lens-derived labels) and all came back clean. Known non-blocking ergonomic
-  issue: the per-slice PO single-line format causes mechanical first-iteration lint failures that
-  compiles self-correct (multi-line PO support is a recorded candidate). **Frozen backlog,
-  deliberately untouched:** failure-class library, enforced reviewer isolation, cross-vendor
-  review, runtime smoke.
+- **v0.7.0 — decision-grade planning** (current, tagged): four accepted lenses — proof-obligation
+  mapping, payment-depth, AI-output depth, evidence-sufficiency (PASS / FAIL /
+  **INSUFFICIENT_EVIDENCE** launch gates, defaulting to no-go). Each pre-registered, re-proven on
+  the fixtures that earned it, falsifier-checked.
+- **v0.6-rc1 — verified decomposition** (superseded): spec-compiler, plan-lint, plan-review
+  rubric, seven planning fixtures across three real systems.
+- **v0.5 — evidence-backed review harness** (frozen): make-bundle, regression-check, risk-leveled
+  ship-review, proofs 01–09, the CPA case study.
 
-- **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
-  regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
-- **v0.6 — spec → verified implementation planning** (status: **PARTIAL DOGFOOD**, see proof-10):
-  spec-compiler skill, plan-lint gate, plan-review rubric, seven planning fixtures across three
-  real systems and three synthetic sanity checks — see [`docs/fixture-domains.md`](docs/fixture-domains.md)
-  (CPA: money/status; XR Marketing: AI-output governance + orchestration idempotency;
-  GroundTruth: enterprise-agent trust boundaries; plus auth, multi-slice, cosmetic). Evals run so
-  far: XR-governance FULL (PASS, 6/9 ground-truth HIT), CPA FULL (NEEDS_REVISION — the plan
-  missed the verified-email class the real review caught, which is the eval working), cosmetic
-  LIGHT (proportionate L0). Four fixture evals pending.
+Full changelogs with eval scores: [`docs/release-history.md`](docs/release-history.md).
 
 The rule that holds the whole thing together:
 
@@ -212,7 +179,7 @@ Deterministic gates outrank the reviewer; gates are slice-scoped; commit/PR/merg
 
 ## Status
 
-`v0.1` — markdown-first, no backend. This is a practical verification workflow for AI-assisted builds, not a general methodology. It does not try to be a methodology competitor. It tries to make AI prove one feature at a time.
+`v0.7.0` — three tagged releases (`v0.5-review-harness`, `v0.6-rc1`, `v0.7.0`), runnable verification tools, ten proof documents with pre-registered evals, and a real-app case study. Still a practical verification workflow for AI-assisted builds, not a general methodology — it makes AI prove one feature at a time, and the frozen backlog (failure-class library, enforced isolation, cross-vendor review, runtime smoke) is listed, not implied.
 
 ## License
 
