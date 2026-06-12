@@ -34,24 +34,38 @@ verified-implementation run = one ship-review.
 
 ## Versions
 
-- **v0.7 — in progress.** Item 4 of the rc1 backlog shipped first (it was mechanical):
-  plan-lint's **proof-obligation mapping rule** — every L2+ invariant a slice touches must be
-  referenced in that slice's proof obligations, naming the expected attributed STRONG_RED or an
-  explicit "STRONG_RED not applicable: <reason>". Promoted from proof-10's multi-slice
-  NEEDS_REVISION, where the gap (INV-14 order-visibility) was caught by a human reviewer and
-  diagnosed as mechanically enumerable; the committed plan appendices now serve as regression
-  fixtures, and the rule retroactively catches both reviewer-caught PO gaps (multi INV-14,
-  GroundTruth INV-11). Note: the rule is per-slice — deliberately stricter than the round-1
-  reviewers, who accepted one named PO anywhere; archived plans predate it and stay frozen.
-  The **payment-depth lens** (12 requirements: grant-time amount/currency/captured verification,
-  session supersession, reversal-vs-payment race serialization, money-moved-but-state-rejects
-  reconciliation, fail-closed payment data, money-state audit) shipped second, re-proven against
-  the CPA and multi-slice fixtures (see proof-10's v0.7 round). The **AI-output depth lens**
-  (15 requirements: per-generation model/prompt-version/run capture, claim provenance,
-  verification-not-instruction no-fabrication, generator goldens + adversarial cases, safe
-  decline, leak-safe surfaces, structured-output validation, L2+ human approval, dry-run-first,
-  minors/likeness checks, end-to-end audit) shipped third, re-proven against both XR fixtures.
-  Remaining backlog: evidence-sufficiency lens.
+- **v0.7.0 — decision-grade planning** (tagged `v0.7.0`; supersedes `v0.6-rc1`): the release
+  where the spec compiler got materially better at saying *"show me the mechanism, show me the
+  evidence, show me who decides, show me what blocks launch — and do not confuse a passing test
+  with permission to act."* Four items, each pre-registered before its eval, re-proven on the
+  fixture(s) that earned it, and accepted on falsifier-checked evidence:
+  1. **plan-lint proof-obligation mapping rule** (mechanical) — every L2+ invariant a slice
+     touches needs a named STRONG_RED proof obligation in that slice (or an explicit
+     not-applicable rationale). Promoted from a reviewer-caught gap; retroactively catches both
+     PO gaps human reviewers had found by hand.
+  2. **Payment-depth lens** (12 requirements) — grant-time amount/currency/captured
+     verification, session supersession, reversal-vs-payment race serialization,
+     money-moved-but-state-rejects reconciliation, fail-closed payment data, money-state audit.
+     Re-proven: CPA r3 PASS 5/5, multi-slice r2 PASS 5/5.
+  3. **AI-output depth lens** (15 requirements) — per-generation model/prompt-version/run
+     capture, claim provenance, no-fabrication by verification not instruction, generator
+     goldens + adversarial cases, safe decline, leak-safe surfaces, structured-output validation,
+     L2+ human approval, dry-run-first as a render-and-log stage, minors/likeness checks,
+     end-to-end audit. Re-proven: XR-governance r2 PASS 9/9, XR-orchestration r2 PASS 8/8.
+  4. **Evidence-sufficiency lens** (9 requirements) — a claim is satisfied only when the plan
+     names the exact evidence, the decision it supports, the sufficiency threshold, and the
+     behavior when evidence is missing/stale/ambiguous/contradicted. Launch gates carry an
+     explicit **PASS / FAIL / INSUFFICIENT_EVIDENCE** trichotomy defaulting to no-go; judged
+     metrics require instrument calibration before they gate anything. Re-proven: GroundTruth r2
+     PASS 11/11 — "we launch when the numbers look good" became a blocking question ("what are
+     the numbers, and who signs?").
+  Every fixture that ever scored NEEDS_REVISION has been re-proven PASS under the deeper rubric;
+  every lens round recorded overfitting falsifiers (lens-scoping, no escalation-for-vocabulary,
+  discriminating lens-derived labels) and all came back clean. Known non-blocking ergonomic
+  issue: the per-slice PO single-line format causes mechanical first-iteration lint failures that
+  compiles self-correct (multi-line PO support is a recorded candidate). **Frozen backlog,
+  deliberately untouched:** failure-class library, enforced reviewer isolation, cross-vendor
+  review, runtime smoke.
 
 - **v0.5 — evidence-backed review harness** (tagged `v0.5-review-harness`, frozen): make-bundle,
   regression-check, risk-leveled ship-review, proofs 01–09, the CPA case study.
