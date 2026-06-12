@@ -11,6 +11,8 @@ It is a workflow you run inside Claude Code, plus two dependency-free verificati
 - [`proofs/proof-09-end-to-end-mechanized-run.md`](proofs/proof-09-end-to-end-mechanized-run.md) — the harness dogfooded end-to-end on a fresh Level 2 change
 - [`proofs/proof-08-mechanized-regression-evidence.md`](proofs/proof-08-mechanized-regression-evidence.md) — pre-registered tool validation, including the falsified assumption now encoded in the tool
 
+**For reviewers** — the fastest inspection path: this README → the [release tags](https://github.com/xceleraterecruiting-dotcom/verified-ai-coding/releases) → [`proofs/proof-10`](proofs/proof-10-spec-compiler-fixture-evals.md) (the fixture evals with pre-registered ground truth) → [`skills/spec-compiler/SKILL.md`](skills/spec-compiler/SKILL.md) (the compiler and its lenses) → [`templates/plan-review-rubric.md`](templates/plan-review-rubric.md) (what cold reviews are held to). The [Public evidence boundary](#public-evidence-boundary) section states what can and cannot be re-run from this repo alone.
+
 ---
 
 ## The problem
