@@ -167,6 +167,46 @@ non-user-visible deterministic transformations unless risk justifies it. This le
 generation-side traceability depth (model id + prompt version) and generator goldens were the
 recurring PARTIALs across both AI-output fixture evals (proof-10).
 
+### Evidence-sufficiency lens (apply wherever a consequential decision consumes evidence)
+
+Triggers: launch/ship/go-live decisions, feature or account enablement, automated actions gated on
+metrics, dashboards or eval suites that a human or system will rely on to decide anything,
+compliance attestations ("how do you know it can't X?").
+
+**The rule:** *a claim is not satisfied because evidence exists somewhere. It is satisfied only
+when the plan identifies the exact evidence, the decision it supports, the threshold for
+sufficiency, and what happens when the evidence is missing, stale, ambiguous, or contradicted.*
+"We have tests/logs/reviews" counts for nothing until those artifacts provably support the
+specific claim being made.
+
+When triggered, the plan must address each of these (never by silence):
+
+1. **Decision↔evidence map** — each consequential decision names the exact artifacts that
+   support it (metric, eval suite, probe run, review verdict), not a genre of evidence.
+2. **Pinned semantics** — each metric/eval states what it measures (numerator, denominator,
+   exclusions) AND what it cannot show. A proxy never silently substitutes for the claim
+   (presence-of-citation is not groundedness; tests-passed is not invariant-held).
+3. **Sufficiency thresholds** — minimum sample size, coverage, and recency below which the
+   evidence does not count, regardless of how good the numbers look.
+4. **An explicit INSUFFICIENT_EVIDENCE state** — represented in the gate/dashboard as distinct
+   from both pass and fail, defaulting to no-go. Good numbers on thin data land here, not in PASS.
+5. **Staleness/invalidation** — evidence predating a relevant change (model, prompt, schema,
+   policy) is void; name the invalidation triggers.
+6. **Contradiction handling** — when evidence sources disagree, the decision blocks; it is never
+   resolved by averaging or by picking the favorable source.
+7. **Provenance and reproducibility** — evidence links to its producing run/artifacts; narrative
+   summaries of evidence are not evidence.
+8. **Instrument error** — when a measurement is itself judged (e.g. an LLM grading groundedness),
+   its own error rate is characterized before its output gates anything.
+9. **Negative controls** — the evidence system demonstrably CAN fail (a seeded-bad case is
+   caught); a dashboard that has never shown red proves nothing.
+
+Label lens-derived defaults as lens-derived. Do not impose sample-size ceremony on ordinary unit
+tests or non-decision telemetry — the lens binds evidence to DECISIONS, not to all measurement.
+This lens exists because a real fixture eval (proof-10, GroundTruth GT10) showed launch gates
+distinguishing pass from fail but not from "not enough evidence" — and the harness's own
+`Runtime verification: NONE` rule is this lens applied to itself.
+
 ## Step 3 — Risk classification (model-authored judgment, cited)
 
 Risk is a semantic judgment. You author it; the lint validates only its shape — a script that

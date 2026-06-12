@@ -63,6 +63,15 @@ YES/PARTIAL/NO + evidence. A NO on an applicable lens caps the verdict at NEEDS_
   (9) a refund/manual-reconciliation signal whenever money moves but state rejects activation;
   (10) paid entitlement bound to a verified principal; (11) fail-closed on missing/ambiguous
   payment data; (12) auditability of money-state transitions?
+- **Evidence-sufficiency** (added 2026-06-11 after the GroundTruth eval's GT10 PARTIAL; applies
+  wherever a consequential decision — launch, enablement, automated action, compliance
+  attestation — consumes metrics/evals/reviews): did the plan map each decision to its exact
+  evidence artifacts; pin each metric's semantics including what it cannot show (no proxy
+  substitution); set sufficiency thresholds (sample size, coverage, recency); represent
+  INSUFFICIENT_EVIDENCE as an explicit state distinct from pass/fail, defaulting to no-go; define
+  staleness invalidation and contradiction blocking; require evidence provenance/reproducibility;
+  characterize instrument error where a judge gates decisions; and include negative controls
+  proving the evidence system can fail?
 - **Identity/account-claim bindings** (added 2026-06-11 after the first CPA eval, whose plan
   missed this class; applies to any user↔resource binding in any domain): did the plan
   distinguish *claimed* identifiers from *verified control* — stating what proves the principal

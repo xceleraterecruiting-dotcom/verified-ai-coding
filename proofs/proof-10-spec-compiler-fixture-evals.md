@@ -267,6 +267,29 @@ and XR-orchestration only**, both under lint 6b and all three lenses.
 - No human-approval ceremony on purely internal deterministic transformations without risk
   justification.
 
+## v0.7 evidence-sufficiency lens round — pre-registration (committed BEFORE the rerun)
+
+**Change under test:** the evidence-sufficiency lens (9 requirements under the rule "a claim is
+satisfied only when the plan identifies the exact evidence, the decision it supports, the
+sufficiency threshold, and what happens when evidence is missing/stale/ambiguous/contradicted")
+in the compiler skill + rubric. Rerun: **GroundTruth only** (the fixture that earned it via GT10).
+
+**Pre-registered expectations:**
+- **GT10 should move PARTIAL → HIT**: the launch gate must represent INSUFFICIENT_EVIDENCE as an
+  explicit state distinct from pass/fail, with sufficiency thresholds (sample size / coverage /
+  recency), defaulting to no-go.
+- GT1–GT9 should hold HIT (incl. GT6 metric honesty, which the lens deepens rather than replaces).
+- The instrument-error requirement should land on the groundedness judge (round-1 OQ-8 asked for
+  it; now it must be forced, not asked politely).
+- Severity discipline holds (no lens default absorbing a founder question).
+
+**Overfitting falsifiers (recorded either way):**
+- Lens silent or explicitly not-applicable on slices without decision gates (schema, retrieval,
+  answer path as such).
+- No sample-size ceremony imposed on ordinary unit tests or non-decision telemetry.
+- Lens-derived requirements labeled lens-derived.
+- The dashboard does not become launch-gate bureaucracy for metrics nobody decides on.
+
 ## v0.7 AI-output depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
 
 | Measure | XR-gov r1 | **XR-gov r2 (+ AI-output lens)** | XR-orch r1 | **XR-orch r2 (+ AI-output lens)** |
