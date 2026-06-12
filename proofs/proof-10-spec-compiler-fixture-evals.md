@@ -267,6 +267,39 @@ and XR-orchestration only**, both under lint 6b and all three lenses.
 - No human-approval ceremony on purely internal deterministic transformations without risk
   justification.
 
+## v0.7 AI-output depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
+
+| Measure | XR-gov r1 | **XR-gov r2 (+ AI-output lens)** | XR-orch r1 | **XR-orch r2 (+ AI-output lens)** |
+|---|---|---|---|---|
+| Verdict | PASS | **PASS** | PASS | **PASS** |
+| AI-output lens | PARTIAL (short wording) | **YES, 15/15 point-by-point** | PARTIAL | **YES, 15/15** (points 12/13 by honest scoping — fixture ends at an internal queue; reviewer judged the scoping legitimate, and the plan stages rollout anyway) |
+| Ground truth | 6H/3P/0M | **9/9 HIT** — G6 (model/prompt/run rejected at the persistence layer if missing), G7 (dry-run = full-payload render-and-log with zero-external-call network assertion + per-account audited enablement), G8 (dedicated golden harness with expected-output properties, distinct from canaries) all PARTIAL→HIT as pre-registered | 6H + 2 unscored observations | **8/8 HIT** — AO-a ("A model-call id alone is NOT sufficient unless the call record is specified to contain model id and prompt version" — the deferred-convention weakness closed exactly as instructed), AO-b (dedicated golden + adversarial harness slice, CI-gated) |
+| Autonomy trap | held | **held** — NG-1 "this plan does not grant it"; OQ-2 blocking, asks the founder to ratify the approval assumption itself; Slice 9's harness positioned as "evidence, not permission" | n/a | n/a |
+
+**Pre-registered expectations: all met.** Overfitting falsifiers: **clean on both, with the
+strongest anti-overfit signals of the series** — explicit evaluated-and-not-triggered lens
+dispositions with reasons (payment + identity on both plans), an *unlabeled* spec-derived
+invariant where labeling would have been false (orch INV-9), and a declined lens point with
+honest scoping (orch #13). The reviewers sought counter-evidence and found none.
+
+**Severity-discipline check (watch item from the payment round):** no lens-default absorbed a
+founder-grade question. XR-gov: the approval assumption does NOT absorb OQ-2 — the OQ stays
+high/blocking and asks the founder to ratify the assumption. Two recorded observations of a
+benign tension shape (medium OQs whose answers would widen an invariant, safe only because the
+default is fail-closed exclusion) — same shape, both directions noted, neither a guess.
+
+**New since r1 (both fixtures):** XR-orch r2 escalated minors'/likeness control to a HIGH blocker
+(r1 had it medium) and surfaced offer-retraction-after-draft as a new high blocker; XR-gov r2
+gained a dedicated dry-run publisher slice and a dedicated generator-harness slice. Compile
+friction note: one compile burned its first lint iteration on 22 instances of a single mechanical
+class (PO bullets wrapped so INV id and STRONG_RED landed on different physical lines) —
+self-corrected, but the single-line PO format is now the recurring formatting cost of rule 6b;
+candidate ergonomic fix (multi-line PO blocks) recorded for consideration, not actioned.
+
+**Lens disposition: ACCEPTED** — closed all five pre-registered targets (G6/G7/G8, AO-a/AO-b)
+with clean falsifiers on both fixtures that earned it. No release label change (rc1 stands).
+v0.7 backlog remaining: evidence-sufficiency lens.
+
 ## v0.7 payment-depth lens round — results (2026-06-11; plans + verbatim transcripts in `appendix/proof-10/`)
 
 First compiles under both the payment-depth lens and lint rule 6b (CPA-r3 needed one lint
