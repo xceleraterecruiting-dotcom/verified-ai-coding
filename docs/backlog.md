@@ -2,6 +2,11 @@
 
 Deferred improvements. None are v0.1 blockers.
 
+## v0.7+ Tooling Backlog
+
+- [ ] **BACKLOG — make-bundle: cannot ingest an untracked directory (EISDIR).** See [issue #1](https://github.com/xceleraterecruiting-dotcom/verified-ai-coding/issues/1). Do not implement before explicit approval.
+- [ ] **BACKLOG — scope/allowed-files evidence is bound to tree state at capture time.** See [issue #2](https://github.com/xceleraterecruiting-dotcom/verified-ai-coding/issues/2). Do not implement before explicit approval.
+
 ## v0.3 — reviewer independence
 
 - [x] **Reviewer context metadata:** every ship-review result must state Weak / Fresh-context Claude / Different-Claude-model / Different-vendor model / Different-vendor + isolated tools. — *Addressed: `skills/ship-review/SKILL.md` (## Reviewer context), `templates/ship-scorecard.md`, `templates/review-bundle.md`, and `docs/reviewer-context.md`.*
