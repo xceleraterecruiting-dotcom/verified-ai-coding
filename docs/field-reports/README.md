@@ -51,6 +51,42 @@ repos.
   production bugs on first contact with the real mail provider. The
   mock-fidelity lesson, in full.
 
+## What it cost
+
+The obvious objection to a workflow this heavy is price, so here is the honest
+accounting. One caveat up front: only the **cold-review subagent tokens are
+measured** (each review reports its usage); everything else is
+operator-session estimation, not billing data. Dollar figures are
+pay-as-you-go API terms — on a subscription plan the marginal cost is the plan
+you already pay.
+
+| Line item | Measured or estimated | Figure |
+|---|---|---|
+| Deterministic gates (regression-check, make-bundle, scope gate, test suites) | measured (they're local Node/vitest) | **~$0** — the 500+ mutation proofs and every test run burned CPU, not tokens |
+| One cold review | **measured** (sasha arc: 18 reviews, ~1.23M subagent tokens, 33k–95k each, avg ~68k; email-cleaner reviewers 37k–57k) | **~$1–2 per review round** — the heavyweights were the adversarial ones (a live network-interceptor audit, a cold reproduction of a bundle failure) |
+| One shipped slice end-to-end (contract → build → gates → STRONG_RED → review → scorecard) | estimated | **~$5–15** typical (sasha); up to ~$10–50 on the largest-context project (XR-Main) |
+| A full multi-week arc | estimated | low hundreds (sasha 19-PR arc: ~$75–200; email-cleaner: a few M tokens) up to low four figures for the biggest corpus (XR-Main, 52 runs) |
+| Overhead vs. unverified "just write it" coding | estimated, consistent across all four projects | **~2–3× tokens** (range 1.5–4×) — the contracts, mutation runs, review rounds, and remediation are extra passes |
+
+Three findings worth stating plainly:
+
+1. **The adversarial half is startlingly cheap.** The part of the workflow
+   that caught ~40 real defects — the cold reviews — cost roughly $25 across
+   sasha's entire arc. The proof mechanisms (STRONG_RED, bundles, scope gates)
+   are effectively free.
+2. **The dominant spend is not the ceremony.** It's the main reasoning loop
+   re-reading large codebases across long sessions on a premium model. The
+   skill's own overhead is a modest multiplier on a base cost you'd pay
+   anyway; prompt caching does heavy lifting since the workflow's long stable
+   contexts are cache-friendly.
+3. **The counterfactual pays for it.** At ~$100 of overhead per arc, any one
+   of the caught defects (an entitlement leak, a silent-data-loss bug, a
+   never-bundling app store submission) discovered in production by a paying
+   user costs more than the entire arc's verification bill.
+
+Going forward the estimates get replaced by actuals: the ship-scorecard
+template now carries a **Cost** field per run.
+
 ## What the field record changed in the skills
 
 Recurring failure classes from these runs are now encoded in the skills rather

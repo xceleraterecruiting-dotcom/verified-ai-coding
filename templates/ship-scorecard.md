@@ -8,6 +8,10 @@ Read-only output of `ship-review`. It records the verdict per dimension and a si
 - **Diff / PR:**
 - **Reviewer model used:**
 - **Date:**
+- **Cost:** review subagent tokens: ___ · main-loop estimate: ___ · billing: API / subscription
+  > Optional but encouraged — field estimates converge on ~$1–2 per cold review and ~2–3× token
+  > overhead vs. unverified coding (`docs/field-reports/README.md` § What it cost). Recording
+  > actuals per run is what turns that estimate into data.
 
 ## Dimensions
 

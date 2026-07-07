@@ -67,8 +67,12 @@ zero autonomous dangerous actions** (no deploys, DDL, flag flips, or secret
 handling — all held at human gates). The subject repos are private, so these
 numbers are operator-verified testimony with a per-repo paper trail, not
 publicly re-runnable proof — the same evidence-boundary rule as above, applied
-honestly. The write-ups, including every cold-review catch and the failure
-classes that were fed back into the skills, are in
+honestly. Cost, since that's the obvious objection: the adversarial half runs
+about **$1–2 per cold review** at API rates (measured subagent tokens), the
+mechanical gates are ~free, and total overhead versus unverified coding
+converged on ~2–3× tokens across all four projects. The write-ups, including
+every cold-review catch, the cost accounting, and the failure classes that
+were fed back into the skills, are in
 [`docs/field-reports/`](docs/field-reports/README.md).
 
 ## The problem
