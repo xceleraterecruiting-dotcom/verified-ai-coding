@@ -27,7 +27,7 @@ repos.
 | Span | Jun 8 – Jul 2026 | Jun 12 – Jul 3 | Jun–Jul 2026 | Jun–Jul 2026 | ~4 weeks |
 | Mutation specs / STRONG_RED records | 474 specs, 47 scorecards citing STRONG_RED | 37 | per-slice | 3 live-verified | **500+** |
 | Cold reviews returning FAIL / NEEDS_REVIEW | multiple (defects fixed pre-merge) | 8 — every one a real defect | ~20 blockers across the AI slices | 4 slices, 10 blockers | **~40 real defects stopped pre-ship** |
-| Tests at end of span | 1,078 passing (marketing scope) | 298 (0 at start) | 397 | 159 (21 at start) | **~1,900** |
+| Test-suite growth over the span (context, not proof — this repo's own thesis is that green counts lie; the evidence is the STRONG_RED row above) | 1,078 passing (marketing scope) | 0 → 298 | 397 | 21 → 159 | — |
 | Human gates held | merge + invariant call | merge + invariant call | merge + invariant call | merge + invariant call | all |
 | Autonomous dangerous actions (deploys, DDL, flag flips, secrets) | 0 | 0 | 0 | 0 | **0** |
 
