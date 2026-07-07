@@ -7,6 +7,12 @@ Deferred improvements. None are v0.1 blockers.
 - [ ] **BACKLOG — make-bundle: cannot ingest an untracked directory (EISDIR).** See [issue #1](https://github.com/xceleraterecruiting-dotcom/verified-ai-coding/issues/1). Do not implement before explicit approval.
 - [ ] **BACKLOG — scope/allowed-files evidence is bound to tree state at capture time.** See [issue #2](https://github.com/xceleraterecruiting-dotcom/verified-ai-coding/issues/2). Do not implement before explicit approval.
 
+## From the field record (docs/field-reports/) — do not implement before explicit approval
+
+- [ ] **Generalize the autoloop accelerator.** The XR-Main run ended with the skill's mechanical loop automated behind a fail-closed allow-list danger classifier (anything not provably inert is ticketed for a human; a planted drift into a publish-gate file was ticketed, not built; human merge gate intact). Worth extracting into a reusable pattern/template here — the classifier's allow-list design and its negative test are the load-bearing parts.
+- [ ] **Offline-proof tooling.** The provably-offline rule (credential tripwire + blocked-network run) is currently prose in `verified-implementation`. A small script that runs a test command with dummy creds and a blocked network, and emits a verifiable "zero external attempts" capture for the bundle, would make it mechanical.
+- [ ] **Operator-checklist capture.** `templates/operator-checklist.md` is manual. Candidate tooling: length-verified env pulls and deployment-READY-by-ID polling as capture commands `make-bundle` can ingest.
+
 ## v0.3 — reviewer independence
 
 - [x] **Reviewer context metadata:** every ship-review result must state Weak / Fresh-context Claude / Different-Claude-model / Different-vendor model / Different-vendor + isolated tools. — *Addressed: `skills/ship-review/SKILL.md` (## Reviewer context), `templates/ship-scorecard.md`, `templates/review-bundle.md`, and `docs/reviewer-context.md`.*

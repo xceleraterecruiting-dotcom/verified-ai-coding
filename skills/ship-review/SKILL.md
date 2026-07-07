@@ -149,6 +149,8 @@ Classify the diff's level from the contract's business-invariant risk call. Esca
 
 **Mutation validity rule:** *a mutation is valid only if it removes or weakens the claimed fix while preserving the modern test/interface shape.* The spec must carry provenance — `findingId`, `invariant`, `expectedTests` (the assertions expected to discriminate) — and the tool enforces it: a declared discriminator that doesn't fail is **EXPECTATION_MISMATCH** (exit 2), undeclared extra failures are flagged as possible over-broad mutation, and a spec without provenance is labeled **UNATTRIBUTED** and is not proof-grade. This is what stops a fabricated STRONG_RED made by mutating unrelated code until something fails.
 
+**When a mutation comes back NOT_DISCRIMINATING, diagnose *why* before rewriting anything.** The common field case is **masking**: an upstream check, watermark, or sibling guard intercepts the mutated path before the target assertion ever sees it — the test genuinely doesn't discriminate the invariant, but the invariant may still be enforced (by the masking layer). The correct response is to **rewrite the test as a direct seam test** against the guarded code itself, below the masking layer. The wrong response is to loosen or relocate the mutation until something fails — that manufactures a STRONG_RED for a test that still doesn't guard the invariant. Field evidence: two non-discriminating mutations (a CAS test masked by a watermark check, a SQL guard shielded by an upstream check) were rejected and rewritten as direct seam tests rather than salvaged.
+
 ```
 node scripts/regression-check.mjs --repo <repo> --tests <test-file>... \
   --mutations <spec.json> [--out <dir>]
@@ -164,6 +166,25 @@ Spec shape (see `examples/regression-check-sample/` for real ones): `{ "findingI
 ## Step 7 — Ship/no-ship scorecard
 
 Produce `templates/ship-scorecard.md`: per-dimension verdicts (Behavior, Grounding, Client-interpretation, Safety, Tests, Redteam, Observability), a **Scope** row (allowed-files gate PASS/FAIL), and a single decision — **SHIP** or **DO NOT SHIP**. Each evidence row carries its proof-depth label so a green check can't hide a shallow proof. For Level 2+ work the scorecard must also include the **Regression proof** block (one entry per remediated blocker, citing the regression-check result and mutation spec) and the **Runtime verification** field — `NONE` blocks "production-ready" language for Level 2+ regardless of how strong the static proof is. The scorecard is read-only output. It passes only when the invariant is enforced below the UI, the diff is within approved scope, and every redteam case behaves correctly.
+
+## Operator checks — what no test suite can prove
+
+Some failure modes live outside the code: environment values, the deploy
+pipeline, and a third party's real behavior. Field record
+(`docs/field-reports/`): production env vars that were all empty for a day
+behind a green suite; five releases that silently failed for five hours while
+the domain alias answered every health check; a provider that silently drops
+headers no mock modeled. **A green suite proves the code; only an operator
+check proves the world.**
+
+When a slice touches deployment surface, configuration, external providers, or
+realtime behavior, the scorecard's Runtime verification field must reference a
+completed `templates/operator-checklist.md` (env values pulled and
+length-verified, the deployment verified READY *by ID* not by alias, one real
+request through the changed path, provider quirks observed first-hand). For a
+slice whose runtime depends on an external provider, `UNIT-MOCK`/`SEAM-LEVEL`
+evidence caps the claim at "correct against spec" — first contact with the
+real provider is a planned, observed step, never something users discover.
 
 ## Reviewer context
 

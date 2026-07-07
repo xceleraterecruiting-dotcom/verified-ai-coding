@@ -88,6 +88,28 @@ Record this in the **Grounding verification** table of `templates/feature-contra
 
 > **If the contract says 'reuse the proven seam,' the grounding section must prove that the new path actually routes through that seam and does not create a parallel path.**
 
+### Anti-pattern: grounding against stubs and fixtures (the "fantasy enum")
+
+A grounding claim satisfied by reading a **stub, mock, or test fixture** is not
+grounded — stubs encode the author's beliefs, and fixtures written by the same
+author share the same fantasy, so the tests confirm the belief instead of the
+code. Field evidence: a presence filter checked `status === "active"`, a value
+the real enum (`open|advancing|resolved`) cannot produce; contract grounding
+and test fixtures both used the fantasy value, and **289 green tests shipped
+over a feature that never fired**. A second run grounded an entitlement claim
+against stub behavior and missed a real caller that leaked paid content.
+
+**Rules:**
+- Every consumed shape, enum, status value, and payload field in the contract
+  must trace to the **exporting source** (the schema, the exported type, the
+  route's actual response) — never to a local stub or fixture.
+- Where the language allows it, **make the compiler the gate**: type consumed
+  values against the exported type so an impossible literal is a type error
+  (`TS2367: no overlap`), not a silently-green test.
+- When grounding a decision function, enumerate its **callers** from the real
+  code, not from the contract's memory of them — a caller you didn't list is a
+  path the invariant doesn't cover.
+
 ## Step 3 — State the invariants
 
 This is the heart of the skill. Before any code, write:
@@ -166,7 +188,33 @@ List the files the implementation is **allowed** to touch and the files that are
 
 - **Tests** (`templates/test-plan.md`): unit, integration, and regression tests that exercise each invariant. Every MUST NEVER gets a test that proves the system refuses it.
 - **Evals** (`templates/eval-plan.md`): only when AI behavior is part of the feature (a model makes a decision, generates content, classifies). Define inputs, expected behavior, and scoring. Skip if there's no AI in the runtime path.
-- **Redteam / bypass cases** (`templates/redteam-plan.md`): adversarial inputs that try to slip past the guard — the rejected approval, the blocked draft, the edited-but-not-approved state. Each case states input → required behavior.
+- **Redteam / bypass cases** (`templates/redteam-plan.md`): adversarial inputs that try to slip past the guard — the rejected approval, the blocked draft, the edited-but-not-approved state. Each case states input → required behavior. When a gate returns objects, include the **mutable-reference forge**: can a caller mutate a returned object to fake the gated state (`item.status = "APPROVED"`)? Field evidence: a human-review queue for AI-generated content returned items by reference; one property write bypassed the entire gate. Gates must return defensive copies (`structuredClone`) and treat decided items as immutable.
+
+Three proof rules from the field record (`docs/field-reports/`):
+
+- **Server-real payloads.** Client/UI tests must validate payloads **captured
+  from the routes the client actually calls**, not payloads the test author
+  writes from memory — author-imagined fixtures reproduce the author's
+  misunderstanding and go green over broken flows. Field evidence: a review
+  verdict read "the unit tests validated payloads the client author imagined,
+  not the ones the routes actually emit" — four blockers, every interview flow
+  dead-ended.
+- **Provably offline.** If the project has live model/API clients, the test
+  plan must state how the suite is proven to make **zero external calls**:
+  stub every client seam, inject a **credential tripwire** (dummy keys forced
+  into every test worker so a leaked real key can't silently un-stub), and
+  periodically run the suite against a blocked network to prove zero attempts.
+  Field evidence: pre-existing tests made live paid model calls through a new
+  default client; a second suite reached an embeddings provider live,
+  invisible only because the local key happened to be dead.
+- **The gate is the artifact the platform consumes.** A green typecheck can be
+  structurally blind to the real bundler (module-resolution rules differ), and
+  a "stripped code" claim is only proven in the compiled output. For app
+  targets, the build gate is the real bundle (e.g. `expo export`); claims that
+  code was excluded are verified by searching the compiled artifact. Field
+  evidence: an app that typechecked clean could not bundle at all; a
+  paywall-stripping claim was proven by byte-searching the Hermes bundle in
+  ASCII and UTF-16.
 
 ## Step 8 — Observability and ship gates
 

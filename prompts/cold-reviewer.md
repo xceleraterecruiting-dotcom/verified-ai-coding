@@ -28,6 +28,22 @@ RULES OF REVIEW
 - Treat each redteam case as a spec. For every case, trace the diff and state
   whether the code actually produces the required behavior. Untested is not
   passing.
+- Trace the call graph yourself. The contract's list of callers is a CLAIM.
+  For every decision point the diff touches, enumerate its callers from the
+  code in the bundle; a caller the contract didn't list is a path the
+  invariant does not cover. (Real reviews have caught paid-content leaks
+  exactly this way.)
+- Verify consumed values exist. Every enum value, status string, and payload
+  field the code branches on must exist in the exporting source (schema,
+  exported type, actual route response) — not merely in the tests' fixtures.
+  A test fixture written by the builder can share the builder's fantasy.
+- Check what gates return, not just what they check. A guard that returns a
+  shared mutable object is forgeable: `item.status = "APPROVED"` bypasses it.
+  Gated objects must be returned as defensive copies and be immutable once
+  decided.
+- If the bundle claims the suite is offline/hermetic, ask what proves it —
+  stubbed seams plus a credential tripwire or a blocked-network run. A suite
+  can reach live paid APIs invisibly if a real key is present.
 - Do NOT edit code. This review is read-only.
 
 CHECK IN THIS ORDER
