@@ -57,6 +57,20 @@ app, a permission-aware assistant, an unreleased content engine). Concretely:
   that rests on them is labeled as such. This is the harness's evidence-
   sufficiency rule applied to itself.
 
+## Field record
+
+Beyond the fixture proofs, the workflow has now been run for ~4 weeks across
+**four real codebases** (a publish-governed marketing engine, a live consumer
+AI product, an L3-classified game, and an inbox cleaner): **133 verified runs,
+500+ mutation specs, ~40 real defects caught by cold review before ship, and
+zero autonomous dangerous actions** (no deploys, DDL, flag flips, or secret
+handling — all held at human gates). The subject repos are private, so these
+numbers are operator-verified testimony with a per-repo paper trail, not
+publicly re-runnable proof — the same evidence-boundary rule as above, applied
+honestly. The write-ups, including every cold-review catch and the failure
+classes that were fed back into the skills, are in
+[`docs/field-reports/`](docs/field-reports/README.md).
+
 ## The problem
 
 AI writes code that *looks* right and passes a glance. The failure mode isn't
@@ -162,6 +176,11 @@ shasum -a 256 <bundle>/diff.patch   # compare against <bundle>/manifest.json
 
 ## Start here
 
+- `docs/field-reports/` — the field record: 133 verified runs across four real
+  codebases, the cold-review catches, and the failure classes now encoded in
+  the skills (fantasy-enum grounding, imagined client payloads, provably-
+  offline suites, forgeable mutable-reference gates, bundler-blind type gates,
+  operator checks).
 - `docs/case-study-charleston-passing-academy.md` — one real payments app, from
   "all tests green" to confirmed invariant violations to mechanically provable
   fixes (labeled where evidence rests on the private fixture).
@@ -180,7 +199,7 @@ prompts/                 # pasteable cold-review + bounded-remediation prompts
 templates/               # fill-in artifacts: contract, invariants, plans, scorecard
 examples/                # worked examples, built backwards from real failures
 proofs/                  # proof documents + hashed result JSONs (appendix/)
-docs/                    # install, workflow, philosophy, release history
+docs/                    # install, workflow, philosophy, release history, field reports
 ```
 
 ## The worked example
