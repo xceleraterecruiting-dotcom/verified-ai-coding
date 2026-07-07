@@ -57,15 +57,19 @@ The obvious objection to a workflow this heavy is price, so here is the honest
 accounting. One caveat up front: only the **cold-review subagent tokens are
 measured** (each review reports its usage); everything else is
 operator-session estimation, not billing data. Dollar figures are
-pay-as-you-go API terms — on a subscription plan the marginal cost is the plan
-you already pay.
+pay-as-you-go API terms, stated for readers who bill that way; all four field
+projects actually ran on a Claude Code subscription, where the marginal cost
+of every run was $0 beyond the plan. And be careful what the big numbers
+refer to: the per-slice and per-arc rows price the **entire build** — the
+skill's own share is the overhead slice, broken out below.
 
 | Line item | Measured or estimated | Figure |
 |---|---|---|
 | Deterministic gates (regression-check, make-bundle, scope gate, test suites) | measured (they're local Node/vitest) | **~$0** — the 500+ mutation proofs and every test run burned CPU, not tokens |
 | One cold review | **measured** (sasha arc: 18 reviews, ~1.23M subagent tokens, 33k–95k each, avg ~68k; email-cleaner reviewers 37k–57k) | **~$1–2 per review round** — the heavyweights were the adversarial ones (a live network-interceptor audit, a cold reproduction of a bundle failure) |
-| One shipped slice end-to-end (contract → build → gates → STRONG_RED → review → scorecard) | estimated | **~$5–15** typical (sasha); up to ~$10–50 on the largest-context project (XR-Main) |
-| A full multi-week arc | estimated | low hundreds (sasha 19-PR arc: ~$75–200; email-cleaner: a few M tokens) up to low four figures for the biggest corpus (XR-Main, 52 runs) |
+| One shipped slice end-to-end — **the whole feature**: read, design, implement, test, plus the skill's passes | estimated | **~$5–15** typical (sasha); up to ~$10–50 on the largest-context project (XR-Main) |
+| A full multi-week arc — again, **the entire build at API list prices**, not the skill | estimated | low hundreds (sasha 19-PR arc: ~$75–200; email-cleaner: a few M tokens) up to low four figures for the biggest corpus (XR-Main, 52 runs) |
+| **The skill's own marginal cost** — only the passes it adds on top of just writing the code (contracts, mutation runs, cold reviews, remediation) | reviews measured, rest estimated | **tens of dollars per arc** — e.g. ~$25 of cold reviews plus artifact/mutation passes on sasha's ~$75–200 arc |
 | Overhead vs. unverified "just write it" coding | estimated, consistent across all four projects | **~2–3× tokens** (range 1.5–4×) — the contracts, mutation runs, review rounds, and remediation are extra passes |
 
 Three findings worth stating plainly:
